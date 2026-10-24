@@ -1,8 +1,9 @@
 # Design notes
 
-Written before the model results existed. It says what I decided and why, and what I will measure.
-Numbers below are copied from `results/data_profile.json` (written by `scripts/profile_data.py`) and
-`data/MANIFEST.json`; anything the modelling will produce is marked "not measured yet".
+Written before the model results existed, apart from the section "Added after the first results". It says
+what I decided and why, and what I measured. Numbers below are copied from `results/data_profile.json`
+(written by `scripts/profile_data.py`) and `data/MANIFEST.json`; the results of the modelling are in
+`results/` and in the memo.
 
 ## The question
 

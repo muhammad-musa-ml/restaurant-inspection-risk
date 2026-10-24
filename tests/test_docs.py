@@ -143,3 +143,11 @@ def test_timing_file_is_consistent_with_the_predictions(root):
     assert timing["repetitions"] == len(timing["seconds_end_to_end_fresh_process"]["values"]) == 5
     assert all(v > 0 for v in timing["seconds_end_to_end_fresh_process"]["values"])
     assert (root / "results" / "timing_docker_ps.txt").is_file()
+
+
+def test_the_docker_listing_beside_the_timing_is_well_formed_and_holds_nothing_private(root):
+    lines = (root / "results" / "timing_docker_ps.txt").read_text(encoding="utf-8").splitlines()
+    assert lines[0].startswith("taken ") and lines[1].split() == ["NAMES", "IMAGE", "STATUS", "PORTS"]
+    assert len(lines) > 2 and all(line.strip() for line in lines[2:])
+    text = "\n".join(lines)
+    assert not re.search(r"[A-Za-z]:\\|/Users/|/home/|@|\b\d{12}\b", text)

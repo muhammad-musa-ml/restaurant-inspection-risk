@@ -133,7 +133,7 @@ def build_values(root: Path = ROOT) -> dict[str, str]:
     v["target_words"] = f"at least {words[card['target']['min_critical_violations']]} critical violations"
     v["gain_hits_base"] = f"{rank['gbm']['hits_per_week']['median'] - rank['base_rate']['hits_per_week']['median']:.1f}"
     v["gain_hits_rule"] = f"{rank['gbm']['hits_per_week']['median'] - rank['previous_result_rule']['hits_per_week']['median']:.1f}"
-    v["logistic_minus_rule"] = f"{(rank['logistic']['precision']['median'] - rank['previous_result_rule']['precision']['median']) * 100:.1f}"
+    v["logistic_minus_rule"] = f"{(rank['logistic']['precision']['median'] - rank['previous_result_rule']['precision']['median']) * 100:.0f}"
     boot = summary["bootstrap_over_test_weeks"]
     b = boot["gbm_5_seed_average"]["precision"]
     v["boot_low"], v["boot_high"] = pct(b["p2.5"]), pct(b["p97.5"])
@@ -153,6 +153,7 @@ def build_values(root: Path = ROOT) -> dict[str, str]:
     v["wk_gbm_gt_rule"] = str(int((weekly["hits_gbm"] > weekly["hits_previous_result_rule"]).sum()))
     v["wk_gbm_gt_logistic"] = str(int((weekly["hits_gbm"] > weekly["hits_logistic"]).sum()))
     v["wk_logistic_gt_gbm"] = str(int((weekly["hits_logistic"] > weekly["hits_gbm"]).sum()))
+    v["wk_tied_logistic"] = str(n - int(v["wk_gbm_gt_logistic"]) - int(v["wk_logistic_gt_gbm"]))
     v["wk_pool_min"], v["wk_pool_max"] = str(int(weekly["pool"].min())), str(int(weekly["pool"].max()))
     weekly_precision = weekly["hits_gbm"] / weekly["visits"]
     v["wk_gbm_min"], v["wk_gbm_max"] = pct(weekly_precision.min(), 0), pct(weekly_precision.max(), 0)
@@ -195,8 +196,11 @@ def build_values(root: Path = ROOT) -> dict[str, str]:
     v["abl_nohist_precision"], v["abl_nohist_lift"] = pct(ab["no_history_features"]["precision"]["median"]), f"{ab['no_history_features']['lift']['median']:.2f}"
     v["abl_nofloor_precision"], v["abl_nofloor_lift"] = pct(ab["history_not_floored"]["precision"]["median"]), f"{ab['history_not_floored']['lift']['median']:.2f}"
     v["n_history_cols"] = str(len(ab["dropped_columns_in_no_history"]))
-    for days in ("30", "60", "90"):
+    days_run = sorted((d for d in summary["history_embargo_days"] if int(d) > 0), key=int)  # "0" is the no-embargo run
+    assert days_run == ["30", "60", "90"], days_run  # the templates name three embargoes: emb30, emb60, emb90
+    for days in days_run:
         v[f"emb{days}"] = pct(summary["history_embargo_days"][days]["precision"]["median"])
+    v["emb_days_text"] = f"{days_run[0]}, {days_run[1]} or {days_run[2]}"
     sec = summary["secondary_target"]
     v["sec_base"], v["sec_gbm_precision"] = pct(sec["base_rate_test"]), pct(sec["gbm"]["precision"]["median"])
     v["sec_rule_precision"], v["sec_gbm_lift"] = pct(sec["previous_result_rule"]["precision"]["median"]), f"{sec['gbm']['lift']['median']:.2f}"
@@ -220,6 +224,9 @@ def build_values(root: Path = ROOT) -> dict[str, str]:
     v["m_prev_total"] = str(matched["matched"]["by_group"][prev]["feature_windows"])
     v["m_hist_from"], v["m_hist_to"] = str(matched["all_rows"]["by_group"][hist]["major"]), str(matched["matched"]["by_group"][hist]["major"])
     v["m_hist_total"] = str(matched["matched"]["by_group"][hist]["feature_windows"])
+    cal = "calendar and static"
+    v["m_cal_from"], v["m_cal_to"] = str(matched["all_rows"]["by_group"][cal]["major"]), str(matched["matched"]["by_group"][cal]["major"])
+    v["m_cal_total"] = str(matched["matched"]["by_group"][cal]["feature_windows"])
     v["match_test_share"] = pct(matched["windows"]["test"]["matched_share"], 0)
     v["match_post_rows"] = str(matched["windows"]["post"]["rows_matched"])
     v["match_post_noise_max"] = f"{matched['sampling_noise_floor_matched']['post']['max']:.2f}"
@@ -244,7 +251,10 @@ def build_values(root: Path = ROOT) -> dict[str, str]:
     v["t_e2e"] = stat_num(e2e, 1)
     v["t_read"], v["t_events"] = stat_num(st["read_snapshot"], 1), stat_num(st["build_inspection_table"], 1)
     v["t_models"], v["t_feat"] = stat_num(st["load_models"], 2), stat_num(st["features_and_scoring"], 1)
-    v["t_when"] = timing["meta"]["timestamp_utc"]
+    stamp = timing["meta"]["timestamp_utc"]
+    v["t_when"] = f"{stamp[:10]} {stamp[11:16]} UTC"
+    listing = (r / "timing_docker_ps.txt").read_text(encoding="utf-8").splitlines()
+    v["t_containers"] = str(len([line for line in listing[2:] if line.strip()]))  # line 1: when taken; line 2: header
 
     # ---- environment -----------------------------------------------------------------------------------------------------------------
     meta = summary["meta"]

@@ -2,11 +2,11 @@
 
 A backtest of one question: when a health department can only put some of its routine restaurant
 inspections first each week, which ones should they be? It takes New York City's public restaurant
-inspection results, ranks each week's routine inspections by how likely they are to turn up a pattern of
-critical violations, and measures what the top of the list buys compared with simpler rules, on weeks the
-model never saw. Around that sit the parts I wanted to practise: features that provably use only records
-from before the inspection, probabilities that are checked instead of trusted, drift monitoring, a script
-that scores a new month, and a small static dashboard.
+inspection results, ranks each week's routine inspections by how likely each is to cite
+{{target_words}}, and measures what the top of the list buys compared with simpler rules, on weeks the
+model never saw. Around that sit the parts I wanted to practise: features that use only records from
+before the inspection (the tests try to break that), probabilities that are checked instead of trusted,
+drift monitoring, a script that scores a new month, and a small static dashboard.
 
 I built it to practise evaluating a model honestly on messy real data. Most of the work went into the
 ways such an evaluation goes wrong (leaking the future, choosing a target that nearly every row meets,
@@ -64,7 +64,8 @@ What this says, and what it does not:
 - **Boosting does not beat a logistic regression.** The difference is {{diff_logistic}} points (interval
   {{diff_logistic_low}} to {{diff_logistic_high}}), and the boosted model finished ahead in {{ahead_logistic}}
   of the resamples. The settings search picked the smallest trees on offer ({{leaves}} leaves, at least
-  {{min_rows}} inspections per leaf), again the edge of the grid.
+  {{min_rows}} inspections per leaf), which is the edge of the grid. I widened the grid twice, before reading any
+  test number, and then stopped (see the design notes).
 - **The scores rank better than they predict.** Calibrating with {{calibrator}} scaling, fitted on the
   validation window, made the test-window calibration worse: expected calibration error {{ece_raw}} before and
   {{ece_scaled}} after, Brier score {{brier_raw}} before and {{brier_scaled}} after. The share of hits was
@@ -75,13 +76,13 @@ What this says, and what it does not:
   and between {{thr_visits_min}} and {{thr_visits_max}} in single weeks.
 - **A random split would not have flattered the model on this data.** AUC {{auc_time}} on the time split,
   {{auc_rest}} on a random split by restaurant, {{auc_insp}} on a random split by inspection. I did not find out why.
-- **Most feature drift alarms are the publisher's window moving.** {{drift_major}} of {{drift_total}} feature-months
+- **Most feature drift alarms come from the publisher's window moving.** {{drift_major}} of {{drift_total}} feature-months
   show a major shift against the training window, but the score distribution stays stable (largest monthly
   index {{pred_psi_max}}). Restricted to inspections with the same visible history in every window, the major
   shifts fall from {{m_all_major}} of {{m_all_total}} to {{m_major}} of {{m_total}} feature-windows. The columns that
   accumulate over the whole history still shift.
 
-The first question I was given asked about at least one critical violation. {{train_ge1}} of the training
+As first posed, the question asked about at least one critical violation. {{train_ge1}} of the training
 weeks' routine inspections already cite one, so no ranking can lift precision by more than {{lift_ceiling}}
 times. On that target the boosted model's top {{capacity}} are hits {{sec_gbm_precision}} of the time against
 {{sec_base}} for the pool; the numbers are in `results/summary.json` under `secondary_target`.
@@ -104,7 +105,7 @@ capacity can be moved there.
   how far back a restaurant's visible past reaches depends on what happens after an inspection. Every
   feature therefore ignores records before {{floor_date}} for every restaurant. Without that rule the
   boosted model's precision is {{abl_nofloor_precision}}; without any history features, {{abl_nohist_precision}}.
-  Dropping the most recent 30, 60 or 90 days of history to approximate hearing delays gives {{emb30}},
+  Dropping the most recent {{emb_days_text}} days of history to approximate hearing delays gives {{emb30}},
   {{emb60}} and {{emb90}}.
 - **Features.** {{n_features}} columns: the previous routine inspection's score and violation counts, how
   long ago it was, how often the restaurant has been inspected lately, shares of earlier days that cited each
@@ -118,8 +119,9 @@ capacity can be moved there.
   {{t_e2e}} s end to end in a fresh process (median of {{t_reps}} runs, range in brackets). Inside one process,
   reading the snapshot takes {{t_read}} s, building the inspection table {{t_events}} s, loading the models
   {{t_models}} s, and building features and scoring {{t_feat}} s. Measured {{t_when}} on {{machine}}, wall
-  clock, while other projects' containers were running; `results/timing_docker_ps.txt` lists them and
-  `results/timing_batch_scoring.json` holds every run.
+  clock. The machine was shared: the Docker containers running at the time ({{t_containers}}) are listed in
+  `results/timing_docker_ps.txt`, and processes outside Docker were not recorded. Every run is in
+  `results/timing_batch_scoring.json`.
 
 ## Limits
 

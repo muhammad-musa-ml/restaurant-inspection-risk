@@ -12,7 +12,7 @@ Say the department can put {{capacity}} routine inspections ahead of the rest ea
 {{capacity}} is about {{capacity_share}} of the pool. I counted an inspection as a hit when it cited
 {{target_words}}.
 
-Choosing the {{capacity}} at random finds a hit in {{base_precision}} of them, which is just the share of
+Choosing the {{capacity}} at random finds a hit in {{base_precision}} of them, which is about the share of
 hits in the pool. Ranking the pool with a boosted-trees model finds a hit in {{gbm_precision}}. That is
 {{gbm_hits}} hits a week where random order gives {{base_hits}}, so about {{gain_hits_base}} more, and the
 model was ahead of that week's random baseline in {{wk_gbm_gt_base}} of the {{wk_total}} test weeks.
@@ -20,13 +20,13 @@ model was ahead of that week's random baseline in {{wk_gbm_gt_base}} of the {{wk
 Two things matter more than that headline. First, a much simpler rule does most of the work: put first the
 restaurants whose previous routine inspection went badly. It finds a hit in {{rule_precision}}. A plain
 logistic regression gets {{logistic_precision}}, which is as good as the boosted trees. So the evidence
-supports ranking the pool, and it does not support paying for a complicated model. Second, the
+supports ranking the pool; it does not show that the boosted model earns its extra complexity. Second, the
 probabilities the model produces are not reliable as numbers, and recalibrating them made that worse. They
 are good enough to put inspections in order. I would not show an inspector one as the chance of a problem.
 
 ## The question, and what counts as a hit
 
-The question I was first given was whether an inspection will find a critical violation. The data makes
+The question as first posed was whether an inspection will find a critical violation. The data makes
 that question nearly empty. In the training weeks {{train_ge1}} of routine inspections already cite at
 least one critical violation, so there is almost nothing to rank, and even a perfect ordering could beat
 random order by a factor of only {{lift_ceiling}}. I moved the bar to {{target_words}}, which about half of
@@ -42,8 +42,8 @@ week is my assumption. The dashboard has a slider for other values.
 
 One more point on how to read "a hit". Every inspection in the data did take place, so I can see how each
 one turned out. The test is whether the ones the model put at the top of a week's list were the ones that
-turned out badly. It does not tell us what the department would have found if it had followed the list, because the
-inspections it would have delayed were done anyway.
+turned out badly. It does not tell us what the department would have found had it followed the list: the
+inspections that list would have pushed later still happened that same week.
 
 ## How I tested it
 
@@ -63,8 +63,8 @@ on:
 
 {{windows_table}}
 
-The model is trained on the first window, its settings are chosen on the second, and the third is used once
-at the end. The fourth window is only watched, to see what happens to months the model never saw. Anything with
+The model is trained on the first window, and its settings, including the calibration, are chosen on the
+second. Nothing is chosen on the third; the results are measured there. The fourth window is only watched, to see what happens to months the model never saw. Anything with
 chance in it (the boosting seed, how ties are broken) was run {{n_seeds}} times, and results are given as the median
 with the lowest and highest in brackets. {{n_seeds}} seeds do not tell you how much the choice of test weeks
 matters, so I also resampled the test weeks {{boot_draws}} times to get an interval.
@@ -97,8 +97,8 @@ The week-to-week spread is large. The boosted model's weekly precision ran from 
 
 ### A simple rule, or a plain regression, does nearly as well
 
-The logistic regression is level with the boosted model: it was ahead in {{wk_logistic_gt_gbm}} weeks and
-behind in {{wk_gbm_gt_logistic}}, and the difference in precision is {{diff_logistic}} points (interval
+The logistic regression is level with the boosted model: it was ahead in {{wk_logistic_gt_gbm}} weeks, behind
+in {{wk_gbm_gt_logistic}} and tied in the other {{wk_tied_logistic}}, and the difference in precision is {{diff_logistic}} points (interval
 {{diff_logistic_low}} to {{diff_logistic_high}}; the boosted model finished ahead in only {{ahead_logistic}} of
 resamples). The search over boosted-tree settings points the same way. I tried {{grid_points}} combinations
 and the winner was the smallest trees allowed, {{leaves}} leaves each, with at least {{min_rows}} inspections
@@ -155,7 +155,7 @@ each restaurant's latest one, so a restaurant that is inspected often loses its 
 leaking information about the future I ignore everything before {{floor_date}} for every restaurant. Skipping that
 rule gives {{abl_nofloor_precision}} instead of {{gbm_precision}}, so the effect was small here, but it is the kind of error that
 would be easy to make without noticing. Second, the file holds each old inspection as it ended up after any hearing, not as it looked
-the next day. Leaving out the most recent 30, 60 or 90 days of history gives {{emb30}}, {{emb60}} and {{emb90}}, which is no real change.
+the next day. Leaving out the most recent {{emb_days_text}} days of history gives {{emb30}}, {{emb60}} and {{emb90}}, which is no real change.
 
 ### The data is moving, and most of the alarms trace back to how it is published
 
@@ -176,7 +176,9 @@ about the previous inspection the count drops from {{m_prev_from}} of {{m_prev_t
 ![Major shifts, all inspections against matched inspections](figures/drift_alerts.png)
 
 The columns that add up over the whole visible history still shift ({{m_hist_to}} of {{m_hist_total}}), as they would,
-because matching does not shorten the past they see. The last window has only {{match_post_rows}} matching rows and a noise
+because matching does not shorten the past they see. The calendar and static columns (month, weekday, borough, cuisine)
+do not follow the pattern ({{m_cal_from}} of {{m_cal_total}} against {{m_cal_to}}). I did not look into them; each
+window covers different months, so the month column at least has to differ. The last window has only {{match_post_rows}} matching rows and a noise
 floor of up to {{match_post_noise_max}}, so I would not read much into it. The score distribution itself, the thing the ranking depends on,
 stayed stable: its largest monthly index is {{pred_psi_max}}, below the moderate cut-off of {{psi_moderate}}.
 
@@ -193,16 +195,16 @@ stayed stable: its largest monthly index is {{pred_psi_max}}, below the moderate
 
 ## What I would do with this
 
-1. Start with the rule, not the model. Putting first the restaurants whose last routine inspection went badly captures most of the
+- Start with the rule, not the model. Putting first the restaurants whose last routine inspection went badly captures most of the
    gain ({{rule_hits}} hits a week at {{capacity}}, against {{gbm_hits}} for the model and {{base_hits}} at random). It needs no
    software beyond a sort, and anyone can see why a restaurant is near the top. A logistic regression is the next step up: it is
-   {{logistic_minus_rule}} points more precise than the rule at the same capacity.
-2. Rank within each week and take the top of the list. Do not use a fixed score cut-off, which swings the weekly workload.
-3. If scores are shown to inspectors as probabilities, recalibrate them on recent weeks and check them monthly against the
+   about {{logistic_minus_rule}} points more precise than the rule at the same capacity.
+- Rank within each week and take the top of the list. Do not use a fixed score cut-off, which swings the weekly workload.
+- If scores are shown to inspectors as probabilities, recalibrate them on recent weeks and check them monthly against the
    observed share of hits. Watch the share of hits and the average score together, because the model does not follow the level.
-4. For drift, watch the score distribution and the share of hits first. Feature-by-feature alarms will mostly fire because history
+- For drift, watch the score distribution and the share of hits first. Feature-by-feature alarms will mostly fire because history
    grows as time passes, and I would only trust them on inspections with the same visible history.
-5. Before relying on any of this, repeat the test on the department's own schedule and on labels after hearings. That data is not public, and it is the
+- Before relying on any of this, repeat the test on the department's own schedule and on labels after hearings. That data is not public, and it is the
    evidence this memo cannot provide.
 
 ## Reproducing it
