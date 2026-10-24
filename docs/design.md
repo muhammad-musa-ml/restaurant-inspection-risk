@@ -154,7 +154,7 @@ drives the dashboard.
 
 The same rows are also split at random into the same sizes as the three windows, five seeds, and the
 same model is trained and scored. The difference to the time split is how much a random split would have
-overstated. Not measured yet.
+overstated. Measured: `random_vs_time_split` in `results/summary.json`, discussed in the memo.
 
 ## Drift
 
@@ -176,6 +176,21 @@ scores do not change when the month's own outcome columns are blanked.
 A static page in `docs/` (plain HTML and JavaScript reading one JSON file written from the results; no build
 step, no server, no other account) published with GitHub Pages from this repository. It shows aggregates
 only, never a named restaurant. GitHub Actions runs the tests on every push.
+
+## Added after the first results
+
+- **A matched-history drift check** (`scripts/drift_matched_history.py`). The monthly PSI flagged most
+  features, and the obvious suspect was the publisher's three-year window: a later row sees more of the past.
+  I did not want to leave that as a guess, so the same comparison is repeated on inspections whose previous
+  initial inspection was at most 365 days earlier, which every window sees equally. Only about one inspection in
+  ten qualifies, which is too few for a monthly PSI, so the comparison is per window and the noise floor is
+  re-measured at each window's size. Features that accumulate over the whole history still see a longer past
+  in later windows, and the check says so instead of hiding them.
+- **The calibrator is reported even though it hurt.** It was chosen on the validation window by the rule above
+  and applied once to the test window. The test-window result is in the memo as it came out.
+- **README and memo numbers are copied.** Both documents are rendered by `scripts/render_docs.py` from
+  templates whose numbers are placeholders filled from `results/`; `tests/test_docs.py` fails if a committed
+  document differs from a fresh render or if a template contains a digit outside code and links.
 
 ## What I am not doing
 
