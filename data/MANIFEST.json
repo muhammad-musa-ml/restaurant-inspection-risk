@@ -1,0 +1,62 @@
+{
+  "source": {
+    "name": "DOHMH New York City Restaurant Inspection Results",
+    "publisher": "New York City Department of Health and Mental Hygiene (DOHMH), via NYC Open Data",
+    "dataset_id": "43nn-pn8j",
+    "page": "https://data.cityofnewyork.us/d/43nn-pn8j",
+    "api": "https://data.cityofnewyork.us/resource/43nn-pn8j.json",
+    "credentials": "none (unauthenticated Socrata API)"
+  },
+  "fetch": {
+    "started_utc": "2026-10-24T06:52:53.382551+00:00",
+    "finished_utc": "2026-10-24T06:55:43.884363+00:00",
+    "api_rows_updated_at_utc": "2026-10-23T22:05:41+00:00",
+    "api_row_count_before": 294406,
+    "api_row_count_after": 294406,
+    "page_size": 50000,
+    "order": ":id"
+  },
+  "files": {
+    "inspections.csv.gz": {
+      "rows": 294406,
+      "columns": [
+        "camis",
+        "boro",
+        "zipcode",
+        "cuisine_description",
+        "inspection_date",
+        "inspection_type",
+        "action",
+        "violation_code",
+        "critical_flag",
+        "score",
+        "grade",
+        "grade_date",
+        "record_date"
+      ],
+      "sha256_of_gzip": "a8dfd5f564c309813459f690bbebb33f2c05459ff9136523bc84b68e15dcbcb3",
+      "sha256_of_csv": "f1268dd7f7ba4f9bbccd235e5c1bcbec8afc1e6e095193bd339a731d76ecd198",
+      "dates": "calendar dates (YYYY-MM-DD) in New York; no time zone applied"
+    },
+    "violation_codes.csv": {
+      "rows": 147,
+      "sha256": "f66a3e95a4f4549e35b12281e3522b930a34ad2cc9c1cbc9d611233bd5de1ba3",
+      "descriptions_repaired_from_double_decoded_text": 0
+    }
+  },
+  "not_requested": [
+    "dba (name)",
+    "building",
+    "street",
+    "phone",
+    "latitude",
+    "longitude",
+    "bin",
+    "bbl",
+    "nta",
+    "community_board",
+    "council_district",
+    "census_tract",
+    "location"
+  ]
+}
