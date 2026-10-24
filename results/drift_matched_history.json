@@ -1,7 +1,7 @@
 {
   "meta": {
     "command": "python scripts/drift_matched_history.py",
-    "timestamp_utc": "2026-10-24T08:05:59+00:00",
+    "timestamp_utc": "2026-10-24T08:32:39+00:00",
     "machine": "Windows 11 (10.0.26200), AMD64",
     "python": "3.13.5",
     "packages": {
@@ -12,7 +12,7 @@
       "matplotlib": "3.11.2",
       "scipy": "1.18.1"
     },
-    "code_git_head": "c652aaff20b2abef011319a32faeda8fbdac6b44"
+    "code_git_head": "eac5ea1866163001bc89e0297c347a8e7ce5e841"
   },
   "rule": "rows whose previous initial inspection took place at most 365 days earlier",
   "why": "the same rule means the same visible history in every window, so these rows are comparable",

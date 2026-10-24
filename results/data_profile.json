@@ -1,7 +1,7 @@
 {
   "meta": {
     "command": "python scripts/profile_data.py",
-    "timestamp_utc": "2026-10-24T07:18:48+00:00",
+    "timestamp_utc": "2026-10-24T08:29:57+00:00",
     "machine": "Windows 11 (10.0.26200), AMD64",
     "python": "3.13.5",
     "packages": {
@@ -12,7 +12,7 @@
       "matplotlib": "3.11.2",
       "scipy": "1.18.1"
     },
-    "code_git_head": "d1570e5e60f6e76de939986d9d3940858e652b24"
+    "code_git_head": "eac5ea1866163001bc89e0297c347a8e7ce5e841"
   },
   "snapshot": {
     "citation_rows": 294406,

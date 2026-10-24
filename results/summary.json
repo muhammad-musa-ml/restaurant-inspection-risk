@@ -1,7 +1,7 @@
 {
   "meta": {
     "command": "python scripts/run_pipeline.py",
-    "timestamp_utc": "2026-10-24T07:38:32+00:00",
+    "timestamp_utc": "2026-10-24T08:31:29+00:00",
     "machine": "Windows 11 (10.0.26200), AMD64",
     "python": "3.13.5",
     "packages": {
@@ -12,7 +12,7 @@
       "matplotlib": "3.11.2",
       "scipy": "1.18.1"
     },
-    "code_git_head": "222c824b2229439bd625577d1dd1309871e14d8a"
+    "code_git_head": "eac5ea1866163001bc89e0297c347a8e7ce5e841"
   },
   "setup": {
     "target": "at least 2 critical violations at an initial cycle inspection",
