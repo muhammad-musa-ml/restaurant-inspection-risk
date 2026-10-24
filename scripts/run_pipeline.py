@@ -232,7 +232,8 @@ def main() -> int:
     out[shown].to_csv(results / "predictions.csv.gz", index=False, lineterminator="\n", compression="gzip")
 
     for k, s in enumerate(seeds):
-        boosters[k].save_model(str(models_dir / f"gbm_seed{s}.txt"), num_iteration=boosters[k].best_iteration)
+        runinfo.write_gzip_text(models_dir / f"gbm_seed{s}.txt.gz",
+                                boosters[k].model_to_string(num_iteration=boosters[k].best_iteration))
     card = {
         "created_utc": runinfo.run_meta(command)["timestamp_utc"],
         "code_git_head": runinfo.git_head(ROOT),
@@ -243,7 +244,7 @@ def main() -> int:
         "numeric_columns": st.numeric, "categorical_columns": features.CATEGORICAL,
         "lightgbm": {"params": best["params"], "seeds": list(seeds),
                      "best_iterations": [int(b.best_iteration) for b in boosters],
-                     "files": [f"gbm_seed{s}.txt" for s in seeds]},
+                     "files": [f"gbm_seed{s}.txt.gz" for s in seeds]},
         "calibration": {"method": chosen, "fitted_on": f"validation window {config.VALID_START} to {config.TEST_START}",
                         "calibrator": ensemble_calibrators[chosen].to_dict()},
         "capacity": {"per_week": capacity, "probability_threshold": ensemble_point["threshold"],

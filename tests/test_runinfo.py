@@ -24,3 +24,21 @@ def test_write_json_uses_unix_line_endings(tmp_path):
 def test_write_json_refuses_unknown_types(tmp_path):
     with pytest.raises(TypeError):
         runinfo.write_json(tmp_path / "z.json", {"k": object()})
+
+
+def test_gzip_text_round_trips_with_lf_endings(tmp_path):
+    path = tmp_path / "m.txt.gz"
+    runinfo.write_gzip_text(path, "tree\r\nversion=v4\n")
+    assert runinfo.read_gzip_text(path) == "tree\nversion=v4\n"
+
+
+def test_gzip_text_bytes_depend_only_on_the_text(tmp_path):
+    first, second = tmp_path / "a" / "m.txt.gz", tmp_path / "b" / "other_name.txt.gz"
+    runinfo.write_gzip_text(first, "same text\n" * 50)
+    runinfo.write_gzip_text(second, "same text\n" * 50)
+    raw = first.read_bytes()
+    assert raw == second.read_bytes()
+    assert raw[4:8] == b"\x00\x00\x00\x00"  # no time stamp
+    assert raw[3] == 0                       # no flags: no stored file name
+    runinfo.write_gzip_text(tmp_path / "c.txt.gz", "same text\n" * 50, level=1)
+    assert (tmp_path / "c.txt.gz").read_bytes() != raw

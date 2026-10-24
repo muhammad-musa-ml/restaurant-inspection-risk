@@ -8,7 +8,7 @@ import lightgbm as lgb
 import numpy as np
 import pandas as pd
 
-from . import config, data, drift, features, metrics, modeling
+from . import config, data, drift, features, metrics, modeling, runinfo
 
 
 class ScoringError(ValueError):
@@ -18,7 +18,7 @@ class ScoringError(ValueError):
 def load_artifacts(models_dir: str | Path) -> dict:
     models_dir = Path(models_dir)
     card = json.loads((models_dir / "model_card.json").read_text(encoding="utf-8"))
-    boosters = [lgb.Booster(model_file=str(models_dir / name)) for name in card["lightgbm"]["files"]]
+    boosters = [lgb.Booster(model_str=runinfo.read_gzip_text(models_dir / name)) for name in card["lightgbm"]["files"]]
     return {"card": card, "boosters": boosters,
             "calibrator": modeling.calibrator_from_dict(card["calibration"]["calibrator"])}
 

@@ -19,6 +19,10 @@ from pathlib import Path
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from inspection_risk import runinfo  # noqa: E402
+
 IGNORED_KEYS = {"meta", "created_utc", "code_git_head"}
 
 
@@ -50,10 +54,8 @@ def compare_json(committed: Path, fresh: Path, tolerance: float) -> list[str]:
 
 
 def same_text(committed: Path, fresh: Path) -> bool:
-    """Model files are text: LightGBM writes CRLF on Windows and git stores LF, so compare with LF endings."""
-    def read(path: Path) -> bytes:
-        return path.read_bytes().replace(b"\r\n", b"\n")
-    return read(committed) == read(fresh)
+    """Model files are gzip-compressed text: compare the text, with LF line endings."""
+    return runinfo.read_gzip_text(committed).replace("\r\n", "\n") == runinfo.read_gzip_text(fresh).replace("\r\n", "\n")
 
 
 def compare_csv(committed: Path, fresh: Path, tolerance: float) -> list[str]:

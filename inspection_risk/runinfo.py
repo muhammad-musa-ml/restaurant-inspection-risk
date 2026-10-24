@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import datetime as dt
+import gzip
+import io
 import json
 import platform
 import subprocess
@@ -44,6 +46,20 @@ def write_json(path: Path | str, obj) -> None:
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     text = json.dumps(_finite_or_none(obj), indent=2, default=_plain, allow_nan=False) + "\n"
     Path(path).write_text(text, encoding="utf-8", newline="\n")
+
+
+def write_gzip_text(path: Path | str, text: str, level: int = 9) -> None:
+    """Write `text` (UTF-8) gzip-compressed with a fixed level, no stored file name and no time stamp, so the
+    file bytes depend only on the text. Line endings are LF whatever the platform."""
+    buffer = io.BytesIO()
+    with gzip.GzipFile(fileobj=buffer, mode="wb", compresslevel=level, mtime=0) as handle:
+        handle.write(text.replace("\r\n", "\n").encode("utf-8"))
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    Path(path).write_bytes(buffer.getvalue())
+
+
+def read_gzip_text(path: Path | str) -> str:
+    return gzip.decompress(Path(path).read_bytes()).decode("utf-8")
 
 
 def git_head(repo: Path) -> str | None:

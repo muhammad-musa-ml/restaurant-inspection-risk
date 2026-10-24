@@ -194,7 +194,7 @@ inspection_risk/   the package: data, features, metrics, drift, modelling, pipel
 scripts/           fetch, profile, run, score a month, time, check, build the dashboard data and the docs
 scripts/templates/ the README and memo with their numbers left as placeholders
 data/              the snapshot (inspections.csv.gz), its manifest, the violation code list
-models/            one boosted-tree model per seed, the model card (calibrator, threshold, drift reference)
+models/            one boosted-tree model per seed (gzip-compressed text), the model card (calibrator, threshold, drift reference)
 results/           summary.json, the tables, predictions for the validation, test and later windows, timing
 docs/              design notes, memo, figures, and the dashboard (index.html, app.js, style.css, data/)
 tests/             unit and integration tests
