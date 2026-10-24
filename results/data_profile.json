@@ -1,0 +1,348 @@
+{
+  "meta": {
+    "command": "python scripts/profile_data.py",
+    "timestamp_utc": "2026-10-24T07:18:48+00:00",
+    "machine": "Windows 11 (10.0.26200), AMD64",
+    "python": "3.13.5",
+    "packages": {
+      "pandas": "3.1.0",
+      "numpy": "2.5.4",
+      "scikit-learn": "1.9.1",
+      "lightgbm": "4.7.0",
+      "matplotlib": "3.11.2",
+      "scipy": "1.18.1"
+    },
+    "code_git_head": "d1570e5e60f6e76de939986d9d3940858e652b24"
+  },
+  "snapshot": {
+    "citation_rows": 294406,
+    "placeholder_rows_never_inspected": 3917,
+    "record_dates": [
+      "2026-10-23"
+    ],
+    "restaurants_with_a_real_inspection": 27452,
+    "inspection_events": 92713,
+    "earliest_inspection_date": "2007-08-10",
+    "latest_inspection_date": "2026-10-21"
+  },
+  "visibility": {
+    "max_span_days_between_a_restaurants_earliest_and_latest_record": 1095,
+    "rule_in_publisher_description": "records up to three years before each restaurant's most recent inspection",
+    "history_floor_date": "2023-10-22",
+    "min_window_days": 365,
+    "first_date_with_min_window": "2024-10-21"
+  },
+  "initial_cycle_inspections_since_floor": {
+    "inspections": 40381,
+    "restaurants": 21917,
+    "gap_days_between_consecutive_initial_inspections": {
+      "p5": 213.1500000000001,
+      "p25": 394.0,
+      "p50": 492.0,
+      "p75": 581.0,
+      "p95": 740.8499999999985
+    },
+    "by_month": {
+      "2023-10": {
+        "initial_cycle_inspections": 245.0,
+        "share_ge1_critical": 0.8571428571428571,
+        "share_ge2_critical": 0.44081632653061226
+      },
+      "2023-11": {
+        "initial_cycle_inspections": 650.0,
+        "share_ge1_critical": 0.8676923076923077,
+        "share_ge2_critical": 0.43538461538461537
+      },
+      "2023-12": {
+        "initial_cycle_inspections": 929.0,
+        "share_ge1_critical": 0.8579117330462863,
+        "share_ge2_critical": 0.46932185145317545
+      },
+      "2024-01": {
+        "initial_cycle_inspections": 992.0,
+        "share_ge1_critical": 0.8629032258064516,
+        "share_ge2_critical": 0.4647177419354839
+      },
+      "2024-02": {
+        "initial_cycle_inspections": 577.0,
+        "share_ge1_critical": 0.8665511265164645,
+        "share_ge2_critical": 0.4679376083188908
+      },
+      "2024-03": {
+        "initial_cycle_inspections": 511.0,
+        "share_ge1_critical": 0.8747553816046967,
+        "share_ge2_critical": 0.4657534246575342
+      },
+      "2024-04": {
+        "initial_cycle_inspections": 970.0,
+        "share_ge1_critical": 0.8731958762886598,
+        "share_ge2_critical": 0.4742268041237113
+      },
+      "2024-05": {
+        "initial_cycle_inspections": 1485.0,
+        "share_ge1_critical": 0.8632996632996633,
+        "share_ge2_critical": 0.494949494949495
+      },
+      "2024-06": {
+        "initial_cycle_inspections": 1611.0,
+        "share_ge1_critical": 0.8888888888888888,
+        "share_ge2_critical": 0.5245189323401613
+      },
+      "2024-07": {
+        "initial_cycle_inspections": 1413.0,
+        "share_ge1_critical": 0.8966737438075018,
+        "share_ge2_critical": 0.49256900212314225
+      },
+      "2024-08": {
+        "initial_cycle_inspections": 309.0,
+        "share_ge1_critical": 0.8640776699029126,
+        "share_ge2_critical": 0.45307443365695793
+      },
+      "2024-09": {
+        "initial_cycle_inspections": 1066.0,
+        "share_ge1_critical": 0.8330206378986866,
+        "share_ge2_critical": 0.4606003752345216
+      },
+      "2024-10": {
+        "initial_cycle_inspections": 1930.0,
+        "share_ge1_critical": 0.8740932642487047,
+        "share_ge2_critical": 0.4813471502590674
+      },
+      "2024-11": {
+        "initial_cycle_inspections": 821.0,
+        "share_ge1_critical": 0.8660170523751523,
+        "share_ge2_critical": 0.464068209500609
+      },
+      "2024-12": {
+        "initial_cycle_inspections": 866.0,
+        "share_ge1_critical": 0.8937644341801386,
+        "share_ge2_critical": 0.4838337182448037
+      },
+      "2025-01": {
+        "initial_cycle_inspections": 955.0,
+        "share_ge1_critical": 0.8785340314136125,
+        "share_ge2_critical": 0.4848167539267016
+      },
+      "2025-02": {
+        "initial_cycle_inspections": 581.0,
+        "share_ge1_critical": 0.7796901893287436,
+        "share_ge2_critical": 0.4079173838209983
+      },
+      "2025-03": {
+        "initial_cycle_inspections": 1132.0,
+        "share_ge1_critical": 0.9081272084805654,
+        "share_ge2_critical": 0.5459363957597173
+      },
+      "2025-04": {
+        "initial_cycle_inspections": 732.0,
+        "share_ge1_critical": 0.894808743169399,
+        "share_ge2_critical": 0.5382513661202186
+      },
+      "2025-05": {
+        "initial_cycle_inspections": 1324.0,
+        "share_ge1_critical": 0.8889728096676737,
+        "share_ge2_critical": 0.4947129909365559
+      },
+      "2025-06": {
+        "initial_cycle_inspections": 1151.0,
+        "share_ge1_critical": 0.8992180712423979,
+        "share_ge2_critical": 0.5082536924413553
+      },
+      "2025-07": {
+        "initial_cycle_inspections": 1023.0,
+        "share_ge1_critical": 0.9012707722385142,
+        "share_ge2_critical": 0.5034213098729228
+      },
+      "2025-08": {
+        "initial_cycle_inspections": 980.0,
+        "share_ge1_critical": 0.9040816326530612,
+        "share_ge2_critical": 0.4806122448979592
+      },
+      "2025-09": {
+        "initial_cycle_inspections": 1126.0,
+        "share_ge1_critical": 0.8676731793960923,
+        "share_ge2_critical": 0.46003552397868563
+      },
+      "2025-10": {
+        "initial_cycle_inspections": 1246.0,
+        "share_ge1_critical": 0.8820224719101124,
+        "share_ge2_critical": 0.46147672552166935
+      },
+      "2025-11": {
+        "initial_cycle_inspections": 1260.0,
+        "share_ge1_critical": 0.8809523809523809,
+        "share_ge2_critical": 0.4587301587301587
+      },
+      "2025-12": {
+        "initial_cycle_inspections": 1274.0,
+        "share_ge1_critical": 0.8453689167974883,
+        "share_ge2_critical": 0.41287284144427
+      },
+      "2026-01": {
+        "initial_cycle_inspections": 1065.0,
+        "share_ge1_critical": 0.8751173708920188,
+        "share_ge2_critical": 0.476056338028169
+      },
+      "2026-02": {
+        "initial_cycle_inspections": 1129.0,
+        "share_ge1_critical": 0.8733392382639504,
+        "share_ge2_critical": 0.4419840566873339
+      },
+      "2026-03": {
+        "initial_cycle_inspections": 1585.0,
+        "share_ge1_critical": 0.8599369085173502,
+        "share_ge2_critical": 0.4757097791798107
+      },
+      "2026-04": {
+        "initial_cycle_inspections": 1410.0,
+        "share_ge1_critical": 0.8631205673758865,
+        "share_ge2_critical": 0.4787234042553192
+      },
+      "2026-05": {
+        "initial_cycle_inspections": 1215.0,
+        "share_ge1_critical": 0.9045267489711935,
+        "share_ge2_critical": 0.5456790123456791
+      },
+      "2026-06": {
+        "initial_cycle_inspections": 1284.0,
+        "share_ge1_critical": 0.9057632398753894,
+        "share_ge2_critical": 0.5404984423676013
+      },
+      "2026-07": {
+        "initial_cycle_inspections": 1491.0,
+        "share_ge1_critical": 0.9094567404426559,
+        "share_ge2_critical": 0.5781354795439303
+      },
+      "2026-08": {
+        "initial_cycle_inspections": 1572.0,
+        "share_ge1_critical": 0.9013994910941476,
+        "share_ge2_critical": 0.5407124681933843
+      },
+      "2026-09": {
+        "initial_cycle_inspections": 1504.0,
+        "share_ge1_critical": 0.9042553191489362,
+        "share_ge2_critical": 0.526595744680851
+      },
+      "2026-10": {
+        "initial_cycle_inspections": 967.0,
+        "share_ge1_critical": 0.8738366080661841,
+        "share_ge2_critical": 0.5139607032057911
+      }
+    }
+  },
+  "target_choice_from_training_window_only": {
+    "window": "2024-10-21 to 2025-10-06 (exclusive)",
+    "rows": 11655,
+    "share_at_least_1_critical": 0.8845988845988846,
+    "share_at_least_2_critical": 0.49206349206349204,
+    "share_at_least_3_critical": 0.2852852852852853,
+    "share_at_least_4_critical": 0.14843414843414843,
+    "share_at_least_5_critical": 0.06786786786786787
+  },
+  "splits": {
+    "train": {
+      "rows": 11655,
+      "weeks": 50,
+      "mean_rows_per_week": 233.1,
+      "first_date": "2024-10-21",
+      "last_date": "2025-10-04",
+      "share_ge1_critical": 0.8845988845988846,
+      "share_ge2_critical": 0.49206349206349204,
+      "share_with_previous_initial_inspection_visible": 0.4460746460746461,
+      "share_with_any_earlier_inspection_visible": 0.6865722865722865
+    },
+    "valid": {
+      "rows": 4668,
+      "weeks": 17,
+      "mean_rows_per_week": 274.5882352941176,
+      "first_date": "2025-10-06",
+      "last_date": "2026-01-31",
+      "share_ge1_critical": 0.8699657240788347,
+      "share_ge2_critical": 0.4505141388174807,
+      "share_with_previous_initial_inspection_visible": 0.7350042844901457,
+      "share_with_any_earlier_inspection_visible": 0.9515852613538989
+    },
+    "test": {
+      "rows": 8124,
+      "weeks": 26,
+      "mean_rows_per_week": 312.46153846153845,
+      "first_date": "2026-02-02",
+      "last_date": "2026-08-01",
+      "share_ge1_critical": 0.8854012801575578,
+      "share_ge2_critical": 0.5109551944854751,
+      "share_with_previous_initial_inspection_visible": 0.7961595273264401,
+      "share_with_any_earlier_inspection_visible": 0.9721811915312654
+    },
+    "post": {
+      "rows": 3199,
+      "weeks": 9,
+      "mean_rows_per_week": 355.44444444444446,
+      "first_date": "2026-08-03",
+      "last_date": "2026-10-03",
+      "share_ge1_critical": 0.9027821194123163,
+      "share_ge2_critical": 0.5348546420756486,
+      "share_with_previous_initial_inspection_visible": 0.7996248827758674,
+      "share_with_any_earlier_inspection_visible": 0.984057517974367
+    }
+  },
+  "restaurant_attribute_stability_within_visible_history": {
+    "restaurants_with_two_or_more_visible_events": 22606,
+    "share_with_more_than_one_zipcode": 0.0,
+    "share_with_more_than_one_cuisine": 0.0,
+    "share_with_more_than_one_boro": 0.0
+  },
+  "violation_families": {
+    "selection_rule": "first two characters of the code; at least 2000 citations at initial cycle inspections before 2025-10-06",
+    "selected": [
+      "02",
+      "04",
+      "05",
+      "06",
+      "08",
+      "09",
+      "10"
+    ],
+    "citations_by_family_in_selection_window": {
+      "10": 27705,
+      "06": 19672,
+      "04": 18483,
+      "02": 14017,
+      "08": 11671,
+      "09": 3572,
+      "05": 2463,
+      "28": 741,
+      "03": 563,
+      "07": 3,
+      "22": 3,
+      "18": 1
+    }
+  },
+  "cuisine_levels_kept": [
+    "American",
+    "Coffee/Tea",
+    "Chinese",
+    "Pizza",
+    "Latin American",
+    "Bakery Products/Desserts",
+    "Mexican",
+    "Donuts",
+    "Japanese",
+    "Italian",
+    "Caribbean",
+    "Chicken",
+    "Hamburgers",
+    "Sandwiches",
+    "Juice, Smoothies, Fruit Salads",
+    "Spanish",
+    "Korean",
+    "Asian/Asian Fusion",
+    "Frozen Desserts",
+    "Tex-Mex",
+    "Jewish/Kosher",
+    "Thai",
+    "Indian",
+    "French",
+    "Bagels/Pretzels"
+  ],
+  "week_boundaries_are_mondays": true
+}
