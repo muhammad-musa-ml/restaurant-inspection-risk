@@ -1,0 +1,537 @@
+{
+  "meta": {
+    "command": "python scripts/drift_matched_history.py",
+    "timestamp_utc": "2026-10-24T08:05:59+00:00",
+    "machine": "Windows 11 (10.0.26200), AMD64",
+    "python": "3.13.5",
+    "packages": {
+      "pandas": "3.1.0",
+      "numpy": "2.5.4",
+      "scikit-learn": "1.9.1",
+      "lightgbm": "4.7.0",
+      "matplotlib": "3.11.2",
+      "scipy": "1.18.1"
+    },
+    "code_git_head": "c652aaff20b2abef011319a32faeda8fbdac6b44"
+  },
+  "rule": "rows whose previous initial inspection took place at most 365 days earlier",
+  "why": "the same rule means the same visible history in every window, so these rows are comparable",
+  "reference": "the training window (matching rows only for the matched columns)",
+  "windows": {
+    "train": {
+      "rows": 11655,
+      "rows_matched": 1636,
+      "matched_share": 0.14036894036894038,
+      "positive_share_matched": 0.5440097799511002
+    },
+    "valid": {
+      "rows": 4668,
+      "rows_matched": 526,
+      "matched_share": 0.11268209083119109,
+      "positive_share_matched": 0.6026615969581749
+    },
+    "test": {
+      "rows": 8124,
+      "rows_matched": 846,
+      "matched_share": 0.10413589364844904,
+      "positive_share_matched": 0.5295508274231678
+    },
+    "post": {
+      "rows": 3199,
+      "rows_matched": 278,
+      "matched_share": 0.08690215692403876,
+      "positive_share_matched": 0.5467625899280576
+    }
+  },
+  "sampling_noise_floor_matched": {
+    "valid": {
+      "sample_size": 526,
+      "median": 0.005300778026476176,
+      "max": 0.042959893688090604
+    },
+    "test": {
+      "sample_size": 846,
+      "median": 0.0017163653046412411,
+      "max": 0.016104840821770848
+    },
+    "post": {
+      "sample_size": 278,
+      "median": 0.009766887378594977,
+      "max": 0.1733054718486063
+    }
+  },
+  "cutoffs": {
+    "moderate": 0.1,
+    "major": 0.25
+  },
+  "all_rows": {
+    "feature_windows": 90,
+    "all": {
+      "stable": 15,
+      "moderate": 0,
+      "major": 75
+    },
+    "without_calendar_month": {
+      "stable": 15,
+      "moderate": 0,
+      "major": 72
+    },
+    "by_group": {
+      "previous initial inspection": {
+        "feature_windows": 36,
+        "stable": 0,
+        "moderate": 0,
+        "major": 36
+      },
+      "earlier history": {
+        "feature_windows": 36,
+        "stable": 3,
+        "moderate": 0,
+        "major": 33
+      },
+      "neighbourhood and cuisine rates": {
+        "feature_windows": 6,
+        "stable": 3,
+        "moderate": 0,
+        "major": 3
+      },
+      "calendar and static": {
+        "feature_windows": 12,
+        "stable": 9,
+        "moderate": 0,
+        "major": 3
+      }
+    }
+  },
+  "matched": {
+    "feature_windows": 90,
+    "all": {
+      "stable": 53,
+      "moderate": 20,
+      "major": 17
+    },
+    "without_calendar_month": {
+      "stable": 53,
+      "moderate": 20,
+      "major": 14
+    },
+    "by_group": {
+      "previous initial inspection": {
+        "feature_windows": 36,
+        "stable": 30,
+        "moderate": 5,
+        "major": 1
+      },
+      "earlier history": {
+        "feature_windows": 36,
+        "stable": 12,
+        "moderate": 13,
+        "major": 11
+      },
+      "neighbourhood and cuisine rates": {
+        "feature_windows": 6,
+        "stable": 4,
+        "moderate": 1,
+        "major": 1
+      },
+      "calendar and static": {
+        "feature_windows": 12,
+        "stable": 7,
+        "moderate": 1,
+        "major": 4
+      }
+    }
+  },
+  "per_feature": {
+    "prev_ci_n_crit": {
+      "group": "previous initial inspection",
+      "all_rows": {
+        "valid": 0.36090843924665694,
+        "test": 0.5674014914944239,
+        "post": 0.580509005061695
+      },
+      "matched": {
+        "valid": 0.08420655165213511,
+        "test": 0.028157543341586627,
+        "post": 0.24339934045415595
+      }
+    },
+    "prev_ci_n_viol": {
+      "group": "previous initial inspection",
+      "all_rows": {
+        "valid": 0.35814452389491397,
+        "test": 0.562015119687784,
+        "post": 0.5740198245820469
+      },
+      "matched": {
+        "valid": 0.0847289893661668,
+        "test": 0.013077000443780065,
+        "post": 0.1301435707182996
+      }
+    },
+    "prev_ci_score": {
+      "group": "previous initial inspection",
+      "all_rows": {
+        "valid": 0.3718149884913807,
+        "test": 0.5815616300027828,
+        "post": 0.5895071924757538
+      },
+      "matched": {
+        "valid": 0.09955197439627737,
+        "test": 0.03080014384686666,
+        "post": 0.20575703973193088
+      }
+    },
+    "prev_ci_closed": {
+      "group": "previous initial inspection",
+      "all_rows": {
+        "valid": 0.363422776973048,
+        "test": 0.563515447993016,
+        "post": 0.5950737048116184
+      },
+      "matched": {
+        "valid": 0.004888543367784793,
+        "test": 0.0002836520204678451,
+        "post": 0.10517586820113521
+      }
+    },
+    "days_since_prev_ci": {
+      "group": "previous initial inspection",
+      "all_rows": {
+        "valid": 0.6974914508059975,
+        "test": 0.9992408542352547,
+        "post": 0.9671897077568339
+      },
+      "matched": {
+        "valid": 0.2965465625052118,
+        "test": 0.0749395765735268,
+        "post": 0.13265058560033108
+      }
+    },
+    "last_n_crit": {
+      "group": "earlier history",
+      "all_rows": {
+        "valid": 0.5976434817329958,
+        "test": 0.8309470043938827,
+        "post": 1.1294669268232433
+      },
+      "matched": {
+        "valid": 0.09873491230309782,
+        "test": 0.030924181259220057,
+        "post": 0.7095105427572884
+      }
+    },
+    "last_score": {
+      "group": "earlier history",
+      "all_rows": {
+        "valid": 0.5233964665947918,
+        "test": 0.664669260473006,
+        "post": 0.770313714438969
+      },
+      "matched": {
+        "valid": 0.12697122441600087,
+        "test": 0.05975162587516118,
+        "post": 0.7153137003639697
+      }
+    },
+    "days_since_last_inspection": {
+      "group": "earlier history",
+      "all_rows": {
+        "valid": 0.9172029785975544,
+        "test": 1.1150937713196747,
+        "post": 1.3688751852616106
+      },
+      "matched": {
+        "valid": 0.3906248731657151,
+        "test": 0.03371979828802921,
+        "post": 0.37029606954145544
+      }
+    },
+    "n_inspection_days_365": {
+      "group": "earlier history",
+      "all_rows": {
+        "valid": 0.05958712772630703,
+        "test": 0.050935851279272894,
+        "post": 0.08207235197753361
+      },
+      "matched": {
+        "valid": 0.15832400481883277,
+        "test": 0.04161850861641054,
+        "post": 0.14219278074963235
+      }
+    },
+    "ever_closed_prior": {
+      "group": "earlier history",
+      "all_rows": {
+        "valid": 0.584975704475916,
+        "test": 0.7940139568724154,
+        "post": 1.0017385312651923
+      },
+      "matched": {
+        "valid": 0.08381547549736004,
+        "test": 0.004200599023324892,
+        "post": 0.054652350532539244
+      }
+    },
+    "zip_prior_rate": {
+      "group": "neighbourhood and cuisine rates",
+      "all_rows": {
+        "valid": 0.04853897150952701,
+        "test": 0.047067836509013035,
+        "post": 0.08589315064312184
+      },
+      "matched": {
+        "valid": 0.09690693323560912,
+        "test": 0.09811257382668369,
+        "post": 0.01726193031424293
+      }
+    },
+    "cuisine_prior_rate": {
+      "group": "neighbourhood and cuisine rates",
+      "all_rows": {
+        "valid": 0.2949539438208766,
+        "test": 0.36885220146579006,
+        "post": 0.5524209208735417
+      },
+      "matched": {
+        "valid": 0.21378427721875115,
+        "test": 0.09167009515274617,
+        "post": 0.48938616637861654
+      }
+    },
+    "month": {
+      "group": "calendar and static",
+      "all_rows": {
+        "valid": 5.507382159470055,
+        "test": 3.449809540619499,
+        "post": 6.28454274040625
+      },
+      "matched": {
+        "valid": 7.061572225290605,
+        "test": 2.855488225082066,
+        "post": 6.585317090245037
+      }
+    },
+    "weekday": {
+      "group": "calendar and static",
+      "all_rows": {
+        "valid": 0.026327749000099338,
+        "test": 0.016143311994822353,
+        "post": 0.020590270104652586
+      },
+      "matched": {
+        "valid": 0.03786846459585161,
+        "test": 0.03418078436416583,
+        "post": 0.07674637433787446
+      }
+    },
+    "prev_ci_fam_02": {
+      "group": "previous initial inspection",
+      "all_rows": {
+        "valid": 0.3578699259796211,
+        "test": 0.5543145307272156,
+        "post": 0.5663252236925291
+      },
+      "matched": {
+        "valid": 0.02428008847866861,
+        "test": 0.0040953537600222885,
+        "post": 0.027331148868865743
+      }
+    },
+    "prev_ci_fam_04": {
+      "group": "previous initial inspection",
+      "all_rows": {
+        "valid": 0.35732621541845777,
+        "test": 0.5534079984753013,
+        "post": 0.5711533702087592
+      },
+      "matched": {
+        "valid": 0.021360112979931914,
+        "test": 5.125955479982376e-05,
+        "post": 0.04201480051374395
+      }
+    },
+    "prev_ci_fam_05": {
+      "group": "previous initial inspection",
+      "all_rows": {
+        "valid": 0.3573585964644448,
+        "test": 0.5532650941877723,
+        "post": 0.566670836300175
+      },
+      "matched": {
+        "valid": 0.0033771590293026838,
+        "test": 0.00015141575054240293,
+        "post": 0.023759562874443987
+      }
+    },
+    "prev_ci_fam_06": {
+      "group": "previous initial inspection",
+      "all_rows": {
+        "valid": 0.357327152471435,
+        "test": 0.5553865860698951,
+        "post": 0.5661596091618691
+      },
+      "matched": {
+        "valid": 0.020691173224001234,
+        "test": 0.0046054491120383675,
+        "post": 0.0013044347859904161
+      }
+    },
+    "prev_ci_fam_08": {
+      "group": "previous initial inspection",
+      "all_rows": {
+        "valid": 0.3581446691023403,
+        "test": 0.5527887484091849,
+        "post": 0.5745039373831977
+      },
+      "matched": {
+        "valid": 0.013579186063738816,
+        "test": 0.0006508643099232129,
+        "post": 0.03497560498169178
+      }
+    },
+    "prev_ci_fam_09": {
+      "group": "previous initial inspection",
+      "all_rows": {
+        "valid": 0.3576580595952703,
+        "test": 0.5549542306185494,
+        "post": 0.5686669400460851
+      },
+      "matched": {
+        "valid": 0.03021662765936003,
+        "test": 0.0005909681075345469,
+        "post": 0.004289035621549062
+      }
+    },
+    "prev_ci_fam_10": {
+      "group": "previous initial inspection",
+      "all_rows": {
+        "valid": 0.3575355248107467,
+        "test": 0.553117981767122,
+        "post": 0.5660191711037608
+      },
+      "matched": {
+        "valid": 0.005210654537412318,
+        "test": 0.002810166873865993,
+        "post": 0.0009112111565535415
+      }
+    },
+    "fam_02_prior_share": {
+      "group": "earlier history",
+      "all_rows": {
+        "valid": 0.5893978654425893,
+        "test": 0.8342843096424791,
+        "post": 1.1024516177980728
+      },
+      "matched": {
+        "valid": 0.2661046003052121,
+        "test": 0.27322973713191606,
+        "post": 0.2689473002233421
+      }
+    },
+    "fam_04_prior_share": {
+      "group": "earlier history",
+      "all_rows": {
+        "valid": 0.5816703653568868,
+        "test": 0.7928736940041587,
+        "post": 0.994112196382927
+      },
+      "matched": {
+        "valid": 0.21253655009497294,
+        "test": 0.24166590274951838,
+        "post": 0.2692106829120286
+      }
+    },
+    "fam_05_prior_share": {
+      "group": "earlier history",
+      "all_rows": {
+        "valid": 0.5816822922323744,
+        "test": 0.7923412548341262,
+        "post": 0.9939057223107782
+      },
+      "matched": {
+        "valid": 0.1275257273600237,
+        "test": 0.14944384357584858,
+        "post": 0.2551212499490526
+      }
+    },
+    "fam_06_prior_share": {
+      "group": "earlier history",
+      "all_rows": {
+        "valid": 0.5923598144687664,
+        "test": 0.8422883133196037,
+        "post": 1.063277973510761
+      },
+      "matched": {
+        "valid": 0.3263687259476722,
+        "test": 0.25678852507239464,
+        "post": 0.11358232275607688
+      }
+    },
+    "fam_08_prior_share": {
+      "group": "earlier history",
+      "all_rows": {
+        "valid": 0.5819161324897307,
+        "test": 0.7912185616235218,
+        "post": 0.9979514247513184
+      },
+      "matched": {
+        "valid": 0.19584918841853777,
+        "test": 0.18686310575387013,
+        "post": 0.16609709316940452
+      }
+    },
+    "fam_09_prior_share": {
+      "group": "earlier history",
+      "all_rows": {
+        "valid": 0.5817253299756624,
+        "test": 0.7941745280494762,
+        "post": 0.9997827919897888
+      },
+      "matched": {
+        "valid": 0.17556175931150045,
+        "test": 0.17642586095202767,
+        "post": 0.04728383607268395
+      }
+    },
+    "fam_10_prior_share": {
+      "group": "earlier history",
+      "all_rows": {
+        "valid": 0.581972604502347,
+        "test": 0.7970969740428001,
+        "post": 1.0112685449058731
+      },
+      "matched": {
+        "valid": 0.008578735684909362,
+        "test": 0.0054361005826094174,
+        "post": 0.008184606363323774
+      }
+    },
+    "boro": {
+      "group": "calendar and static",
+      "all_rows": {
+        "valid": 0.008860246717461747,
+        "test": 0.003011555102545624,
+        "post": 0.008005991551210113
+      },
+      "matched": {
+        "valid": 0.0030925763388434573,
+        "test": 0.012215679933784716,
+        "post": 0.024624754370451103
+      }
+    },
+    "cuisine_group": {
+      "group": "calendar and static",
+      "all_rows": {
+        "valid": 0.012913216427330869,
+        "test": 0.003115046835887031,
+        "post": 0.017774426792347937
+      },
+      "matched": {
+        "valid": 0.12878521397880957,
+        "test": 0.06951288435589718,
+        "post": 0.3009543448323961
+      }
+    }
+  }
+}
