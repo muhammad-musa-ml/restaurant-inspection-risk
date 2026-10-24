@@ -9,14 +9,24 @@ import sys
 from importlib import metadata
 from pathlib import Path
 
+import numpy as np
+
 PACKAGES = ("pandas", "numpy", "scikit-learn", "lightgbm", "matplotlib", "scipy")
+
+
+def _plain(value):
+    if isinstance(value, np.generic):
+        return value.item()
+    if isinstance(value, np.ndarray):
+        return value.tolist()
+    raise TypeError(f"not JSON serialisable: {type(value).__name__}")
 
 
 def write_json(path: Path | str, obj) -> None:
     """JSON with LF line endings and a final newline, whatever the platform (so committed files do not
-    change with the machine that wrote them)."""
+    change with the machine that wrote them). numpy numbers and arrays are written as plain ones."""
     Path(path).parent.mkdir(parents=True, exist_ok=True)
-    Path(path).write_text(json.dumps(obj, indent=2) + "\n", encoding="utf-8", newline="\n")
+    Path(path).write_text(json.dumps(obj, indent=2, default=_plain) + "\n", encoding="utf-8", newline="\n")
 
 
 def git_head(repo: Path) -> str | None:

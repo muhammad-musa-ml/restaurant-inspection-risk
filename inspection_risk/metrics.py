@@ -72,6 +72,26 @@ def per_week_counts(frame: pd.DataFrame, capacity: int) -> pd.DataFrame:
     return pd.concat([pool, positives, visits, hits], axis=1).astype(int)
 
 
+def per_week_counts_fraction(frame: pd.DataFrame, fraction: float) -> pd.DataFrame:
+    """Like per_week_counts, but each week visits ceil(fraction * pool) inspections: a capacity stated as a
+    share of the week's pool, so pools of different sizes (a random split's test set holds a third of each
+    week) can be compared on the same footing."""
+    pool_size = frame.groupby("week", sort=True)["y"].transform("size")
+    limit = np.ceil(fraction * pool_size.to_numpy() - 1e-9)
+    chosen = frame[frame["rank"].to_numpy() <= limit]
+    weeks = frame.groupby("week", sort=True)
+    pool = weeks.size().rename("pool")
+    positives = weeks["y"].sum().rename("positives")
+    top = chosen.groupby("week", sort=True)
+    visits = top.size().reindex(pool.index).fillna(0).rename("visits")
+    hits = top["y"].sum().reindex(pool.index).fillna(0).rename("hits")
+    return pd.concat([pool, positives, visits, hits], axis=1).astype(int)
+
+
+def fraction_metrics(week, score, y, tiebreak, fraction: float) -> dict:
+    return summarise_counts(per_week_counts_fraction(ranked(week, score, y, tiebreak), fraction))
+
+
 def summarise_counts(counts: pd.DataFrame) -> dict:
     """Pooled over weeks: precision = hits/visits, recall = hits/positives, lift = precision/base rate."""
     visits = int(counts["visits"].sum())
@@ -119,6 +139,26 @@ def flagged_metrics(week, y, flagged) -> dict:
     out["visits_per_week_min"] = int(weekly["visits"].min())
     out["visits_per_week_max"] = int(weekly["visits"].max())
     return out
+
+
+def bootstrap_paired(counts_a: pd.DataFrame, counts_b: pd.DataFrame, draws: int = 2000, seed: int = 0) -> dict:
+    """Resample the same weeks for two rankings of the same weeks and look at the difference a - b in
+    precision (a, b have equal visit counts when both use the same capacity). Returns an interval and
+    the share of resamples in which a is ahead."""
+    if not counts_a.index.equals(counts_b.index):
+        raise ValueError("the two rankings must cover the same weeks")
+    rng = np.random.default_rng(seed)
+    n = len(counts_a)
+    a_hits, a_visits = counts_a["hits"].to_numpy(), counts_a["visits"].to_numpy()
+    b_hits, b_visits = counts_b["hits"].to_numpy(), counts_b["visits"].to_numpy()
+    differences = []
+    for _ in range(draws):
+        pick = rng.integers(0, n, n)
+        differences.append(a_hits[pick].sum() / a_visits[pick].sum() - b_hits[pick].sum() / b_visits[pick].sum())
+    low, mid, high = np.percentile(differences, [2.5, 50, 97.5])
+    return {"draws": draws, "seed": seed, "precision_difference": {"p2.5": float(low), "median": float(mid),
+                                                                   "p97.5": float(high)},
+            "share_of_resamples_a_ahead": float(np.mean(np.asarray(differences) > 0))}
 
 
 def bootstrap_weeks(counts: pd.DataFrame, draws: int = 2000, seed: int = 0) -> dict:

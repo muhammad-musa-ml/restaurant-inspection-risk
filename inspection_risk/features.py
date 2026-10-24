@@ -53,19 +53,26 @@ def _asof(left: pd.DataFrame, right: pd.DataFrame, by: str | None, exact: bool =
 
 
 def build_features(events: pd.DataFrame, targets: pd.DataFrame, *, floor, families: list[str],
-                   cuisine_levels: list[str], min_critical: int = config.TARGET_MIN_CRITICAL) -> pd.DataFrame:
+                   cuisine_levels: list[str], min_critical: int = config.TARGET_MIN_CRITICAL,
+                   embargo_days: int = 0) -> pd.DataFrame:
     """Features for each row of `targets` (columns camis, date, boro, zipcode, cuisine).
 
     Nothing from `targets` other than the identifiers and static attributes is read: a target's own
-    outcome columns are never consulted."""
+    outcome columns are never consulted.
+
+    `embargo_days` (default 0) keeps records younger than that many days out of the history. The
+    snapshot holds each old inspection's outcome after any hearing, which is not what was known the day
+    after it; the embargo is a sensitivity check on that, not a measured adjudication delay."""
     floor = pd.Timestamp(floor)
     ev = events[events["date"] >= floor]
     fam_cols = [f"fam_{f}" for f in families]
 
     zip_key = targets["zipcode"].fillna("UNKNOWN").to_numpy()
     cuisine_key = targets["cuisine"].fillna("UNKNOWN").to_numpy()
+    real_date = pd.Series(targets["date"].to_numpy(), index=np.arange(len(targets)))
     left = pd.DataFrame({"_row": np.arange(len(targets)), "camis": targets["camis"].to_numpy(),
-                         "date": targets["date"].to_numpy(), "zip": zip_key, "cuisine": cuisine_key})
+                         "date": (real_date - pd.Timedelta(days=embargo_days)).to_numpy(),
+                         "zip": zip_key, "cuisine": cuisine_key})
 
     # ---- the restaurant's own earlier inspection days (any type) -----------------------------------
     agg = {"n_crit": ("n_crit", "sum"), "score": ("score", "max"), "closed": ("closed", "max")}
@@ -128,14 +135,14 @@ def build_features(events: pd.DataFrame, targets: pd.DataFrame, *, floor, famili
     put("prev_ci_n_viol", prev_ci, "prev_ci_n_viol")
     put("prev_ci_score", prev_ci, "prev_ci_score")
     put("prev_ci_closed", prev_ci, "prev_ci_closed", lambda s: s.astype("float"))
-    days = (left.set_index("_row")["date"] - prev_ci.set_index("_row")["prev_ci_date"].reindex(out.index)).dt.days
+    days = (real_date - prev_ci.set_index("_row")["prev_ci_date"].reindex(out.index)).dt.days
     out["days_since_prev_ci"] = days.reindex(out.index).astype("float")
     for f in families:
         put(f"prev_ci_fam_{f}", prev_ci, f"prev_ci_fam_{f}", lambda s: s.astype("float"))
 
     put("last_n_crit", prior, "last_n_crit")
     put("last_score", prior, "last_score")
-    since = (left.set_index("_row")["date"] - prior.set_index("_row")["last_date"].reindex(out.index)).dt.days
+    since = (real_date - prior.set_index("_row")["last_date"].reindex(out.index)).dt.days
     out["days_since_last_inspection"] = since.reindex(out.index).astype("float")
     cum_days = prior.set_index("_row")["cum_days"].reindex(out.index)
     cum_old = older.set_index("_row")["cum_days"].reindex(out.index).fillna(0)

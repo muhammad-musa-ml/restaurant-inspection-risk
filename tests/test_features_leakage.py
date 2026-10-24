@@ -64,6 +64,19 @@ def test_one_restaurants_later_records_do_not_change_its_earlier_rows(study):
     assert len(mine) > 200
 
 
+def test_embargo_keeps_recent_records_out_of_the_history(study):
+    cut = pd.Timestamp("2026-03-23")
+    rows = study.rows[study.rows["date"] <= cut]
+    recent = tamper(study, study.events["date"] >= cut - pd.Timedelta(days=29))
+    kwargs = dict(floor=study.floor, families=study.families, cuisine_levels=study.cuisine_levels)
+    held_back = features.build_features(study.events, rows, embargo_days=30, **kwargs)
+    pd.testing.assert_frame_equal(held_back, features.build_features(recent, rows, embargo_days=30, **kwargs))
+    # without the embargo the same tampering is visible, so the check above is not vacuous
+    plain = features.build_features(study.events, rows, **kwargs)
+    with pytest.raises(AssertionError):
+        pd.testing.assert_frame_equal(plain, features.build_features(recent, rows, **kwargs))
+
+
 def test_the_check_has_teeth(study, monkeypatch):
     """Plant a leak (let a record dated on the same day count as history) and the check must see it."""
     cut = pd.Timestamp("2026-03-23")

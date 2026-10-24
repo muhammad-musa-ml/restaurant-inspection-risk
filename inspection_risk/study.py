@@ -19,11 +19,29 @@ class Study:
     numeric: list[str]
     rows: pd.DataFrame       # one row per ranked inspection: camis, date, week, split, y (target), y1, n_crit ...
     feats: pd.DataFrame      # features aligned to `rows`
+    min_critical: int = config.TARGET_MIN_CRITICAL
+    embargo_days: int = 0
 
 
-def prepare(path: str | Path, min_critical: int = config.TARGET_MIN_CRITICAL) -> Study:
+def prepare(path: str | Path, min_critical: int = config.TARGET_MIN_CRITICAL, embargo_days: int = 0,
+            history_floor: pd.Timestamp | None = None) -> Study:
+    """Load the snapshot and build the table. `history_floor` replaces the derived floor in the features
+    only (used to show what ignoring the publisher's three-year window would do); the checks on the study
+    dates still use the derived one."""
     raw = data.load_raw(path)
     events = data.build_events(raw)
+    return _build(raw, events, min_critical, embargo_days, history_floor)
+
+
+def variant(base: Study, *, min_critical: int | None = None, embargo_days: int | None = None,
+            history_floor: pd.Timestamp | None = None) -> Study:
+    """The same snapshot with the target, embargo or floor changed; nothing is read from disk again."""
+    return _build(base.raw, base.events,
+                  base.min_critical if min_critical is None else min_critical,
+                  base.embargo_days if embargo_days is None else embargo_days, history_floor)
+
+
+def _build(raw, events, min_critical, embargo_days, history_floor) -> Study:
     floor = data.visibility_floor(events)
     first_ok = floor + pd.Timedelta(days=config.MIN_WINDOW_DAYS)
     if pd.Timestamp(config.TRAIN_START) < first_ok:
@@ -38,7 +56,10 @@ def prepare(path: str | Path, min_critical: int = config.TARGET_MIN_CRITICAL) ->
     families = data.select_families(raw, config.VALID_START)
     train = rows[rows["split"] == "train"]
     cuisine_levels = features.cuisine_levels_from(train)
-    feats = features.build_features(events, rows, floor=floor, families=families,
-                                    cuisine_levels=cuisine_levels, min_critical=min_critical)
+    feats = features.build_features(events, rows, floor=floor if history_floor is None else history_floor,
+                                    families=families, cuisine_levels=cuisine_levels,
+                                    min_critical=min_critical, embargo_days=embargo_days)
     return Study(raw=raw, events=events, floor=floor, families=families, cuisine_levels=cuisine_levels,
-                 numeric=features.numeric_columns(families), rows=rows, feats=feats)
+                 numeric=features.numeric_columns(families), rows=rows, feats=feats,
+                 min_critical=min_critical, embargo_days=embargo_days)
+
