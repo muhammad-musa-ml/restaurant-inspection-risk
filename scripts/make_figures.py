@@ -26,6 +26,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INK, INK2, MUTED, GRID = "#0b0b0b", "#52514e", "#898781", "#e1e0d9"
 BLUE, ORANGE, AQUA = "#2a78d6", "#eb6834", "#1baf7a"
 SPLIT_NAMES = {"valid": "validation", "test": "test", "post": "after the test"}
+PNG_COMPRESS_LEVEL = 6  # zlib level of the PNG writer; fixed so the file bytes depend only on the drawing
 
 
 def style() -> None:
@@ -41,7 +42,8 @@ def style() -> None:
 
 def save(fig, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(path, dpi=150, bbox_inches="tight", metadata={"Software": None})
+    fig.savefig(path, dpi=150, bbox_inches="tight", metadata={"Software": None},
+                pil_kwargs={"compress_level": PNG_COMPRESS_LEVEL})
     plt.close(fig)
     print(f"wrote {path.relative_to(ROOT)}")
 
