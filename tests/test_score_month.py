@@ -28,14 +28,19 @@ def blank_outcomes(events, mask):
     return events
 
 
-def test_scores_do_not_depend_on_the_months_own_outcomes(study, artifacts):
+def test_scores_do_not_depend_on_outcomes_dated_on_or_after_the_inspection(study, artifacts):
+    """Earlier days of the same month are legitimate history for later days, so the cut is mid-month and
+    only inspections up to the cut are compared; their own outcomes are garbled as well."""
+    cut = pd.Timestamp(f"{MONTH}-15")
     targets = scoring.month_targets(study.events, MONTH)
+    targets = targets[targets["date"] <= cut].reset_index(drop=True)
     base, _ = scoring.score_targets(study.events, targets, artifacts)
-    start = pd.Timestamp(f"{MONTH}-01")
-    changed = blank_outcomes(study.events, study.events["date"] >= start)
-    again, _ = scoring.score_targets(changed, scoring.month_targets(changed, MONTH), artifacts)
+    changed = blank_outcomes(study.events, study.events["date"] >= cut)
+    garbled = targets.copy()
+    garbled["n_crit"] = 99
+    again, _ = scoring.score_targets(changed, garbled, artifacts)
     pd.testing.assert_frame_equal(base, again)
-    assert len(base) > 500
+    assert len(base) > 300
 
 
 def test_batch_scores_reproduce_the_pipelines_predictions(study, artifacts, root):
@@ -76,10 +81,11 @@ def test_dates_the_model_was_not_built_for_are_refused(study, artifacts):
 def test_forward_mode_scores_a_planned_list_and_handles_an_unknown_restaurant(study, artifacts):
     known = study.rows.loc[study.rows["split"] == "test", "camis"].drop_duplicates().head(6).tolist()
     due = pd.DataFrame({"camis": known + ["99999999"], "planned_date": ["2026-09-15"] * 7})
-    scored, feats = scoring.score_targets(study.events, scoring.due_targets(study.events, due), artifacts)
+    targets = scoring.due_targets(study.events, due)
+    scored, feats = scoring.score_targets(study.events, targets, artifacts)
     assert len(scored) == 7 and scored["probability"].between(0, 1).all()
-    unknown = scored["camis"] == "99999999"
-    assert feats.loc[unknown.to_numpy(), "prev_ci_n_crit"].isna().all()
+    unknown = (targets["camis"] == "99999999").to_numpy()  # feats is in the order of targets, scored is ranked
+    assert unknown.sum() == 1 and feats.loc[unknown, "prev_ci_n_crit"].isna().all()
 
 
 def test_drift_report_covers_every_feature_and_the_prediction(study, artifacts):
