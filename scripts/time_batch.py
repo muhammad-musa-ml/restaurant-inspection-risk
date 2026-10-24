@@ -74,7 +74,7 @@ def main() -> int:
         "month": args.month, "inspections_scored": inspections, "repetitions": REPETITIONS,
         "seconds_end_to_end_fresh_process": spread(end_to_end),
         "seconds_by_stage_in_one_process": {name: spread(values) for name, values in stages.items()},
-        "note": "wall clock; the machine was shared with other containers, see docker_ps.txt beside this file",
+        "note": "wall clock; the machine was shared with other containers, see timing_docker_ps.txt beside this file",
     }
     runinfo.write_json(args.out, result)
     print(f"wrote {args.out}: end to end median {result['seconds_end_to_end_fresh_process']['median']:.2f} s "
