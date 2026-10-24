@@ -1,5 +1,7 @@
 import gzip
 import hashlib
+import importlib.util
+import io
 import json
 
 import pandas as pd
@@ -67,6 +69,27 @@ def test_snapshot_matches_its_manifest(root):
     assert csv_bytes.count(b"\n") - 1 == manifest["files"]["inspections.csv.gz"]["rows"]
     codes = (root / "data" / "violation_codes.csv").read_bytes()
     assert hashlib.sha256(codes).hexdigest() == manifest["files"]["violation_codes.csv"]["sha256"]
+
+
+def load_fetch_script(root):
+    spec = importlib.util.spec_from_file_location("fetch_data", root / "scripts" / "fetch_data.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_the_fetch_script_writes_the_committed_snapshot_byte_for_byte(root):
+    """The compressed file depends only on the content, the level, no stored name and no time stamp."""
+    fetch = load_fetch_script(root)
+    committed = (root / "data" / "inspections.csv.gz").read_bytes()
+    csv_bytes = gzip.decompress(committed)
+    assert fetch.gzip_csv(csv_bytes) == committed
+    # the comparison can fail: another level gives other bytes for the same content
+    other = io.BytesIO()
+    with gzip.GzipFile(fileobj=other, mode="wb", compresslevel=fetch.GZIP_LEVEL + 1, mtime=0) as handle:
+        handle.write(csv_bytes)
+    assert other.getvalue() != committed
+    assert gzip.decompress(other.getvalue()) == csv_bytes
 
 
 def test_snapshot_has_no_names_addresses_or_phones(root):

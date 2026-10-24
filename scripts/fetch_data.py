@@ -47,6 +47,16 @@ DATE_COLUMNS = ("inspection_date", "grade_date", "record_date")
 # Requested from the API in addition to COLUMNS: the text of the violation, moved to its own table.
 API_COLUMNS = COLUMNS + ["violation_description"]
 USER_AGENT = "restaurant-inspection-risk/fetch_data (public-data research; no account)"
+GZIP_LEVEL = 2
+
+
+def gzip_csv(csv_bytes: bytes) -> bytes:
+    """Compress with a fixed level, no stored file name and no time stamp (mtime=0), so the compressed
+    bytes depend only on the content. tests/test_splits_and_data.py re-creates the committed file with this."""
+    buffer = io.BytesIO()
+    with gzip.GzipFile(fileobj=buffer, mode="wb", compresslevel=GZIP_LEVEL, mtime=0) as gz:
+        gz.write(csv_bytes)
+    return buffer.getvalue()
 
 
 def http_json(url: str, tries: int = 5):
@@ -146,10 +156,7 @@ def main() -> int:
     csv_bytes = buffer.getvalue().encode("utf-8")
 
     gz_path = out_dir / "inspections.csv.gz"
-    with open(gz_path, "wb") as handle:
-        # mtime=0 makes the compressed bytes depend only on the content
-        with gzip.GzipFile(fileobj=handle, mode="wb", compresslevel=9, mtime=0) as gz:
-            gz.write(csv_bytes)
+    gz_path.write_bytes(gzip_csv(csv_bytes))
 
     codes_path = out_dir / "violation_codes.csv"
     with open(codes_path, "w", encoding="utf-8", newline="") as handle:
