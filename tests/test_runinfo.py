@@ -32,6 +32,15 @@ def test_gzip_text_round_trips_with_lf_endings(tmp_path):
     assert runinfo.read_gzip_text(path) == "tree\nversion=v4\n"
 
 
+def test_committed_compressed_files_carry_no_time_stamp_or_file_name(root):
+    """A header with the write time or a name would change the file on every run, whatever the content."""
+    paths = [path for folder in ("data", "results", "models") for path in sorted((root / folder).glob("*.gz"))]
+    assert len(paths) >= 7  # the snapshot, the predictions and one model per seed
+    for path in paths:
+        head = path.read_bytes()[:10]
+        assert head[:2] == b"\x1f\x8b" and head[3] == 0 and head[4:8] == b"\x00\x00\x00\x00", path.name
+
+
 def test_gzip_text_bytes_depend_only_on_the_text(tmp_path):
     first, second = tmp_path / "a" / "m.txt.gz", tmp_path / "b" / "other_name.txt.gz"
     runinfo.write_gzip_text(first, "same text\n" * 50)

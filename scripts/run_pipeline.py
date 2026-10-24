@@ -229,7 +229,7 @@ def main() -> int:
         "gbm_raw": ensemble_raw.round(6), "gbm_calibrated": ensemble_cal[chosen].round(6)})
     for k, s in enumerate(seeds):
         out[f"gbm_raw_seed{s}"] = raw[:, k].round(6)
-    out[shown].to_csv(results / "predictions.csv.gz", index=False, lineterminator="\n", compression="gzip")
+    runinfo.write_gzip_text(results / "predictions.csv.gz", out[shown].to_csv(index=False, lineterminator="\n"))
 
     for k, s in enumerate(seeds):
         runinfo.write_gzip_text(models_dir / f"gbm_seed{s}.txt.gz",
