@@ -194,7 +194,7 @@ def main() -> int:
         "not_requested": ["dba (name)", "building", "street", "phone", "latitude", "longitude", "bin", "bbl",
                           "nta", "community_board", "council_district", "census_tract", "location"],
     }
-    (out_dir / "MANIFEST.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    (out_dir / "MANIFEST.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(f"wrote {gz_path} ({gz_path.stat().st_size} bytes), {codes_path}, MANIFEST.json", file=sys.stderr)
     return 0
 
