@@ -49,6 +49,13 @@ def compare_json(committed: Path, fresh: Path, tolerance: float) -> list[str]:
                        json.loads(fresh.read_text(encoding="utf-8")), tolerance)
 
 
+def same_text(committed: Path, fresh: Path) -> bool:
+    """Model files are text: LightGBM writes CRLF on Windows and git stores LF, so compare with LF endings."""
+    def read(path: Path) -> bytes:
+        return path.read_bytes().replace(b"\r\n", b"\n")
+    return read(committed) == read(fresh)
+
+
 def compare_csv(committed: Path, fresh: Path, tolerance: float) -> list[str]:
     a, b = pd.read_csv(committed, dtype=str), pd.read_csv(fresh, dtype=str)
     if list(a.columns) != list(b.columns) or len(a) != len(b):
@@ -100,7 +107,7 @@ def main() -> int:
         for fresh in sorted(models.iterdir()):
             committed = ROOT / "models" / fresh.name
             problems = (compare_json(committed, fresh, args.tolerance) if fresh.suffix == ".json"
-                        else ([] if committed.read_bytes() == fresh.read_bytes() else ["bytes differ"]))
+                        else ([] if same_text(committed, fresh) else ["text differs"]))
             compared += 1
             print(("OK   " if not problems else "DIFF ") + f"models/{fresh.name}")
             for line in problems[:5]:
