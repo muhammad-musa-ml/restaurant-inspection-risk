@@ -45,7 +45,7 @@ def ranking_metrics(y: np.ndarray, p: np.ndarray) -> dict:
 def week_start(dates: pd.Series) -> pd.Series:
     """The Monday of each date's week."""
     dates = pd.to_datetime(dates)
-    return (dates - pd.to_timedelta(dates.dt.weekday, unit="D")).astype("datetime64[ns]")
+    return (dates - pd.to_timedelta(dates.dt.day_of_week, unit="D")).astype("datetime64[ns]")
 
 
 def ranked(week: pd.Series, score, y, tiebreak) -> pd.DataFrame:

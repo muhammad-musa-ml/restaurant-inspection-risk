@@ -150,7 +150,7 @@ def build_features(events: pd.DataFrame, targets: pd.DataFrame, *, floor, famili
     out["cuisine_prior_rate"] = pd.Series(rates["cuisine"], index=rates["cuisine_row"]).reindex(out.index)
     dates = pd.DatetimeIndex(targets["date"].to_numpy())
     out["month"] = dates.month.astype("float")
-    out["weekday"] = dates.weekday.astype("float")
+    out["weekday"] = dates.day_of_week.astype("float")
     out["boro"] = targets["boro"].fillna("Unknown").to_numpy()
     cuisine = targets["cuisine"].fillna("Unknown")
     out["cuisine_group"] = np.where(cuisine.isin(cuisine_levels), cuisine, np.where(cuisine == "Unknown", "Unknown", "Other"))
