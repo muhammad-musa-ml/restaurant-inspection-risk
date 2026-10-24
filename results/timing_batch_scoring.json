@@ -1,0 +1,83 @@
+{
+  "meta": {
+    "command": "python scripts/time_batch.py --month 2026-09",
+    "timestamp_utc": "2026-10-24T09:06:53+00:00",
+    "machine": "Windows 11 (10.0.26200), AMD64",
+    "python": "3.13.5",
+    "packages": {
+      "pandas": "3.1.0",
+      "numpy": "2.5.4",
+      "scikit-learn": "1.9.1",
+      "lightgbm": "4.7.0",
+      "matplotlib": "3.11.2",
+      "scipy": "1.18.1"
+    },
+    "code_git_head": "afd8bfa095722f668d035dac882bf3bd213f9700"
+  },
+  "month": "2026-09",
+  "inspections_scored": 1504,
+  "repetitions": 5,
+  "seconds_end_to_end_fresh_process": {
+    "median": 13.639253700035624,
+    "min": 12.955568099976517,
+    "max": 13.807525799958967,
+    "values": [
+      13.8075,
+      12.9556,
+      13.132,
+      13.749,
+      13.6393
+    ]
+  },
+  "seconds_by_stage_in_one_process": {
+    "read_snapshot": {
+      "median": 2.4089840999804437,
+      "min": 2.370868399972096,
+      "max": 2.5490891999797896,
+      "values": [
+        2.3709,
+        2.4308,
+        2.409,
+        2.3957,
+        2.5491
+      ]
+    },
+    "build_inspection_table": {
+      "median": 5.639867499936372,
+      "min": 5.287373699946329,
+      "max": 6.508254799991846,
+      "values": [
+        5.6399,
+        5.4345,
+        5.2874,
+        6.3096,
+        6.5083
+      ]
+    },
+    "load_models": {
+      "median": 0.0347493999870494,
+      "min": 0.030456000007689,
+      "max": 0.04308179998770356,
+      "values": [
+        0.0347,
+        0.0305,
+        0.0366,
+        0.0315,
+        0.0431
+      ]
+    },
+    "features_and_scoring": {
+      "median": 0.629150600056164,
+      "min": 0.5867993000429124,
+      "max": 0.7534391999943182,
+      "values": [
+        0.5868,
+        0.6292,
+        0.6181,
+        0.7208,
+        0.7534
+      ]
+    }
+  },
+  "note": "wall clock; the machine was shared with other containers, see timing_docker_ps.txt beside this file"
+}

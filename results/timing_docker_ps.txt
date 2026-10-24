@@ -1,0 +1,46 @@
+taken 2026-10-24T09:04:53Z (while holding the lock), exit code 0; names of two unrelated local Supabase projects replaced by project-a and project-b, and one image name withheld
+NAMES                                    IMAGE                                                   STATUS                       PORTS
+taxi-airflow-webserver-1                 taxi-airflow:local                                      Up 17 minutes (healthy)      0.0.0.0:18280->8080/tcp, [::]:18280->8080/tcp
+taxi-airflow-scheduler-1                 taxi-airflow:local                                      Up 17 minutes (healthy)      8080/tcp
+taxi-postgres-1                          postgres:16                                             Up 18 minutes (healthy)      0.0.0.0:18232->5432/tcp, [::]:18232->5432/tcp
+vllm-serving-bench-vllm-fp16-1           vllm/<name withheld>:v0.32.0                                Up 22 minutes (healthy)      127.0.0.1:18480->8000/tcp
+taxi-s3-1                                chrislusf/seaweedfs:latest                              Up About an hour             0.0.0.0:18290->8333/tcp, [::]:18290->8333/tcp
+railcar-reader-sim-1                     railcar-reader-sim                                      Up About an hour (healthy)   8080/tcp
+railcar-pager-1                          railcar-pager                                           Up About an hour (healthy)   0.0.0.0:8084->8080/tcp, [::]:8084->8080/tcp
+railcar-console-1                        railcar-console                                         Up About an hour (healthy)   0.0.0.0:8085->8080/tcp, [::]:8085->8080/tcp
+railcar-tracker-1                        railcar-tracker                                         Up 42 minutes (healthy)      0.0.0.0:8082->8080/tcp, [::]:8082->8080/tcp
+railcar-query-1                          railcar-query                                           Up About an hour (healthy)   0.0.0.0:8083->8080/tcp, [::]:8083->8080/tcp
+railcar-ingest-1                         railcar-ingest                                          Up About an hour (healthy)   0.0.0.0:8081->8080/tcp, [::]:8081->8080/tcp
+vllm-serving-bench-grafana-1             grafana/grafana:12.0.2                                  Up 2 hours                   127.0.0.1:18491->3000/tcp
+vllm-serving-bench-prometheus-1          prom/prometheus:v3.5.0                                  Up 2 hours                   127.0.0.1:18490->9090/tcp
+vllm-serving-bench-gpu-exporter-1        vllm-serving-bench-gpu-exporter                         Up 2 hours                   9835/tcp
+dispatch-worker2                         kindest/node:v1.37.0                                    Up 2 hours                   
+dispatch-worker3                         kindest/node:v1.37.0                                    Up 2 hours                   
+dispatch-control-plane                   kindest/node:v1.37.0                                    Up 2 hours                   127.0.0.1:53027->6443/tcp, 127.0.0.1:18100->30080/tcp
+dispatch-worker                          kindest/node:v1.37.0                                    Up 2 hours                   
+railcar-otel-collector-1                 otel/opentelemetry-collector-contrib:0.130.0            Up 3 hours                   4317-4318/tcp, 55678-55679/tcp
+railcar-grafana-1                        grafana/grafana:12.0.2                                  Up 3 hours (healthy)         0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp
+railcar-alertmanager-1                   prom/alertmanager:v0.28.1                               Up 3 hours (healthy)         0.0.0.0:9093->9093/tcp, [::]:9093->9093/tcp
+railcar-toxiproxy-1                      ghcr.io/shopify/toxiproxy:2.12.0                        Up 3 hours                   0.0.0.0:8474->8474/tcp, [::]:8474->8474/tcp
+railcar-postgres-1                       postgres:16-alpine                                      Up 3 hours (healthy)         
+railcar-redis-1                          redis:7.4-alpine                                        Up 3 hours (healthy)         6379/tcp
+railcar-jaeger-1                         jaegertracing/jaeger:2.8.0                              Up 3 hours                   0.0.0.0:16686->16686/tcp, [::]:16686->16686/tcp
+railcar-prometheus-1                     prom/prometheus:v3.5.0                                  Up 3 hours (healthy)         0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp
+supabase_studio_project-a                    public.ecr.aws/supabase/studio:2026.10.12-sha-3699278   Up 2 days (healthy)          0.0.0.0:54323->3000/tcp, [::]:54323->3000/tcp
+supabase_pg_meta_project-a                   public.ecr.aws/supabase/postgres-meta:v0.100.0          Up 2 days (healthy)          8080/tcp
+supabase_storage_project-a                   public.ecr.aws/supabase/storage-api:v1.82.1             Up 2 days (healthy)          5000/tcp
+supabase_rest_project-a                      public.ecr.aws/supabase/postgrest:v16.4                 Up 2 days                    3000/tcp
+supabase_realtime_project-a                  public.ecr.aws/supabase/realtime:v2.143.4               Up 2 days (healthy)          4000/tcp
+supabase_inbucket_project-a                  public.ecr.aws/supabase/mailpit:v1.31.3                 Up 2 days (healthy)          0.0.0.0:54324->8025/tcp, [::]:54324->8025/tcp
+supabase_auth_project-a                      public.ecr.aws/supabase/gotrue:v2.197.0                 Up 2 days (healthy)          9999/tcp
+supabase_kong_project-a                      public.ecr.aws/supabase/kong:2.8.1                      Up 2 days (healthy)          0.0.0.0:54321->8000/tcp, [::]:54321->8000/tcp
+supabase_db_project-a                        public.ecr.aws/supabase/postgres:17.11.0.004            Up 2 days (healthy)          0.0.0.0:54322->5432/tcp, [::]:54322->5432/tcp
+supabase_db_project-b         public.ecr.aws/supabase/postgres:17.6.1.127             Up 2 days (healthy)          0.0.0.0:64322->5432/tcp, [::]:64322->5432/tcp
+supabase_studio_project-b     public.ecr.aws/supabase/studio:2026.06.15-sha-a412298   Up 2 days (healthy)          0.0.0.0:64323->3000/tcp, [::]:64323->3000/tcp
+supabase_pg_meta_project-b    public.ecr.aws/supabase/postgres-meta:v0.96.6           Up 2 days (healthy)          8080/tcp
+supabase_storage_project-b    public.ecr.aws/supabase/storage-api:v1.60.10            Up 2 days (healthy)          5000/tcp
+supabase_rest_project-b       public.ecr.aws/supabase/postgrest:v14.5                 Up 2 days                    3000/tcp
+supabase_realtime_project-b   public.ecr.aws/supabase/realtime:v2.107.5               Up 2 days (healthy)          4000/tcp
+supabase_inbucket_project-b   public.ecr.aws/supabase/mailpit:v1.22.3                 Up 2 days (healthy)          0.0.0.0:64324->8025/tcp, [::]:64324->8025/tcp
+supabase_auth_project-b       public.ecr.aws/supabase/gotrue:v2.191.0                 Up 2 days (healthy)          9999/tcp
+supabase_kong_project-b       public.ecr.aws/supabase/kong:2.8.1                      Up 2 days (healthy)          0.0.0.0:64321->8000/tcp, [::]:64321->8000/tcp
