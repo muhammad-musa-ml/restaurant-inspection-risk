@@ -118,8 +118,10 @@ I do not use the inspection's own score, grade, action, violations or any date a
   two critical violations (previous inspection of any type if there is none); random order inside each
   group.
 - **Logistic regression** on the same features (median imputation with missing indicators, scaling, one-hot).
-- **Gradient-boosted trees** (LightGBM) with early stopping on the validation log loss, and a six-point
-  grid (leaves 7/15/31, minimum rows per leaf 20/80) chosen on validation log loss.
+- **Gradient-boosted trees** (LightGBM) with early stopping on the validation log loss, and a twelve-point
+  grid (leaves 3/7/15/31, minimum rows per leaf 20/80/200) chosen on validation log loss. The first run
+  used leaves 7/15/31 and minimum rows 20/80; its best point sat in a corner of that grid, so I widened the
+  grid to bracket it before reading any test-window number.
 
 Anything with randomness is run with seeds 0-4 and reported as the median and the range. The random tie
 breaks of the two rule baselines and the boosting seed (row and column sampling) are the randomness.
