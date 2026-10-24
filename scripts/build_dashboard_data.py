@@ -61,6 +61,10 @@ def main() -> int:
     months = pd.read_csv(results / "monthly_calibration.csv")
     importance = pd.read_csv(results / "feature_importance.csv")
 
+    profile = json.loads((results / "data_profile.json").read_text(encoding="utf-8"))
+    matched = json.loads((results / "drift_matched_history.json").read_text(encoding="utf-8"))
+    coverage = {name: block["share_with_previous_initial_inspection_visible"]
+                for name, block in profile["splits"].items()}
     setup = summary["setup"]
     cal = summary["calibration"]
     chosen = cal["chosen_method"]
@@ -86,7 +90,8 @@ def main() -> int:
             "publisher_rows_updated_utc": manifest["fetch"]["api_rows_updated_at_utc"],
             "citation_rows": manifest["files"]["inspections.csv.gz"]["rows"],
             "target": setup["target"],
-            "windows": {window_names.get(k, k): v for k, v in setup["windows"].items()},
+            "windows": {window_names.get(k, k): {**v, "previous_initial_visible_share": coverage[k]}
+                        for k, v in setup["windows"].items()},
             "repository": "https://github.com/muhammad-musa-ml/restaurant-inspection-risk",
         },
         "capacity": {"default": setup["capacity_per_week"], "mean_pool_per_week_test": setup["mean_pool_per_week_test"],
@@ -111,7 +116,8 @@ def main() -> int:
         "threshold": summary["operating_threshold"],
         "drift": {"months": month_order, "splits": months["split"].tolist(), "rows": months["rows"].tolist(),
                   "features": features, "psi": matrix, "prediction_psi": prediction_row,
-                  "cutoffs": summary["drift"]["cutoffs"], "noise_floor": summary["drift"]["noise_floor"]},
+                  "cutoffs": summary["drift"]["cutoffs"], "noise_floor": summary["drift"]["noise_floor"],
+                  "matched_history": {key: matched[key] for key in ("rule", "windows", "all_rows", "matched")}},
         "importance": importance.head(12).round(6).to_dict("records"),
         "model": {"num_leaves": card["lightgbm"]["params"]["num_leaves"],
                   "min_child_samples": card["lightgbm"]["params"]["min_child_samples"],

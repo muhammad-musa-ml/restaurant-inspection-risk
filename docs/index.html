@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Restaurant inspection risk</title>
+<meta name="description" content="A time-split backtest of ranking each week's routine restaurant inspections in New York City by risk: capacity, calibration, split comparison and drift.">
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the results</a>
+
+<header class="wrap masthead">
+  <p class="eyebrow">Backtest on NYC Open Data</p>
+  <h1>Restaurant inspection risk</h1>
+  <p class="lede" id="lede">Which of the routine inspections due this week should a health department put first? This page replays that question on past weeks, ranking each week's pool using only what was known before the visit.</p>
+  <p class="links">
+    <a href="https://github.com/muhammad-musa-ml/restaurant-inspection-risk">Code and results</a>
+    <a href="https://github.com/muhammad-musa-ml/restaurant-inspection-risk/blob/main/docs/analysis.md">Memo</a>
+    <a href="https://data.cityofnewyork.us/d/43nn-pn8j">Source dataset</a>
+  </p>
+</header>
+
+<main id="main" class="wrap" aria-busy="true">
+  <div id="status" class="status" role="status">Loading results…</div>
+
+  <noscript><p class="status">This page draws its charts with JavaScript. The numbers are in <a href="https://github.com/muhammad-musa-ml/restaurant-inspection-risk/tree/main/results">results/</a> in the repository.</p></noscript>
+
+  <div id="app" hidden>
+    <section class="controls" aria-label="Filter">
+      <div class="control">
+        <label for="capacity">Inspections put first per week</label>
+        <div class="slider-row">
+          <input id="capacity" type="range" min="10" max="300" step="10" value="100">
+          <output id="capacity-out" for="capacity"></output>
+        </div>
+        <p class="hint" id="capacity-hint"></p>
+      </div>
+      <div class="control control-end">
+        <span class="label" id="theme-label">Colour theme</span>
+        <button type="button" id="theme" class="ghost" aria-describedby="theme-label"></button>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-tiles">
+      <h2 id="h-tiles">At this capacity</h2>
+      <div id="tiles" class="tiles"></div>
+    </section>
+
+    <section aria-labelledby="h-capacity">
+      <h2 id="h-capacity">Capacity</h2>
+      <p class="note" id="capacity-note"></p>
+      <div class="grid-2">
+        <figure class="card chart" id="card-precision"></figure>
+        <figure class="card chart" id="card-recall"></figure>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-weekly">
+      <h2 id="h-weekly">Week by week</h2>
+      <figure class="card chart" id="card-weekly"></figure>
+    </section>
+
+    <section aria-labelledby="h-calibration">
+      <h2 id="h-calibration">Calibration</h2>
+      <div id="calibration-tiles" class="tiles tiles-small"></div>
+      <p class="note" id="calibration-note"></p>
+      <div class="grid-2">
+        <figure class="card chart" id="card-reliability"></figure>
+        <figure class="card chart" id="card-monthly"></figure>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-split">
+      <h2 id="h-split">Time split and random splits</h2>
+      <figure class="card chart" id="card-split"></figure>
+    </section>
+
+    <section aria-labelledby="h-drift">
+      <h2 id="h-drift">Drift</h2>
+      <figure class="card chart" id="card-drift"></figure>
+    </section>
+
+    <section aria-labelledby="h-features">
+      <h2 id="h-features">What the model uses</h2>
+      <figure class="card chart" id="card-importance"></figure>
+    </section>
+
+    <section aria-labelledby="h-about" class="about">
+      <h2 id="h-about">About the data and the limits</h2>
+      <ul id="about-list"></ul>
+    </section>
+  </div>
+</main>
+
+<div id="tip" class="tip" role="tooltip" hidden></div>
+</body>
+</html>
