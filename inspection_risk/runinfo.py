@@ -22,11 +22,28 @@ def _plain(value):
     raise TypeError(f"not JSON serialisable: {type(value).__name__}")
 
 
+def _finite_or_none(obj):
+    """Strict JSON has no NaN or Infinity (JSON.parse in a browser rejects them): an empty reliability bin,
+    for example, has no mean, and is written as null."""
+    if isinstance(obj, dict):
+        return {key: _finite_or_none(value) for key, value in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_finite_or_none(value) for value in obj]
+    if isinstance(obj, np.generic):
+        obj = obj.item()
+    if isinstance(obj, np.ndarray):
+        return _finite_or_none(obj.tolist())
+    if isinstance(obj, float) and not np.isfinite(obj):
+        return None
+    return obj
+
+
 def write_json(path: Path | str, obj) -> None:
-    """JSON with LF line endings and a final newline, whatever the platform (so committed files do not
-    change with the machine that wrote them). numpy numbers and arrays are written as plain ones."""
+    """Strict JSON (no NaN) with LF line endings and a final newline, whatever the platform, so committed
+    files do not change with the machine that wrote them. numpy numbers and arrays become plain ones."""
     Path(path).parent.mkdir(parents=True, exist_ok=True)
-    Path(path).write_text(json.dumps(obj, indent=2, default=_plain) + "\n", encoding="utf-8", newline="\n")
+    text = json.dumps(_finite_or_none(obj), indent=2, default=_plain, allow_nan=False) + "\n"
+    Path(path).write_text(text, encoding="utf-8", newline="\n")
 
 
 def git_head(repo: Path) -> str | None:

@@ -13,9 +13,11 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from .features import BORO_LEVELS, CATEGORICAL
 
-# The first run used leaves 7/15/31 and minimum rows 20/80; its best point sat in a corner (7 and 80), so the
-# grid was widened to bracket it, on validation log loss only, before any test-window number was read.
-GRID = [{"num_leaves": leaves, "min_child_samples": child} for leaves in (3, 7, 15, 31) for child in (20, 80, 200)]
+# The first run used leaves 7/15/31 and minimum rows 20/80; its best point sat in a corner (7 and 80). The grid
+# was widened twice to bracket the optimum, on validation log loss only, before any test-window number was
+# read; the second widening is the last one, whatever the winner turns out to be.
+GRID = [{"num_leaves": leaves, "min_child_samples": child} for leaves in (2, 3, 7, 15, 31)
+        for child in (20, 80, 200, 500)]
 BASE_PARAMS = {
     "objective": "binary", "metric": "binary_logloss", "learning_rate": 0.03, "feature_fraction": 0.8,
     "bagging_fraction": 0.8, "bagging_freq": 1, "lambda_l2": 5.0, "verbose": -1,

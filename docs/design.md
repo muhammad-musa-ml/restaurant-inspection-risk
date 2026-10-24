@@ -118,10 +118,11 @@ I do not use the inspection's own score, grade, action, violations or any date a
   two critical violations (previous inspection of any type if there is none); random order inside each
   group.
 - **Logistic regression** on the same features (median imputation with missing indicators, scaling, one-hot).
-- **Gradient-boosted trees** (LightGBM) with early stopping on the validation log loss, and a twelve-point
-  grid (leaves 3/7/15/31, minimum rows per leaf 20/80/200) chosen on validation log loss. The first run
-  used leaves 7/15/31 and minimum rows 20/80; its best point sat in a corner of that grid, so I widened the
-  grid to bracket it before reading any test-window number.
+- **Gradient-boosted trees** (LightGBM) with early stopping on the validation log loss, and a twenty-point
+  grid (leaves 2/3/7/15/31, minimum rows per leaf 20/80/200/500) chosen on validation log loss. The first run
+  used leaves 7/15/31 and minimum rows 20/80 and its best point sat in a corner of that grid; I widened the
+  grid twice to bracket it, on validation only and before reading any test-window number, and stopped at the
+  second widening whatever the winner turned out to be.
 
 Anything with randomness is run with seeds 0-4 and reported as the median and the range. The random tie
 breaks of the two rule baselines and the boosting seed (row and column sampling) are the randomness.
@@ -146,7 +147,8 @@ test window pools about 312 inspections a week, so that is about one in three. T
   advance carries over, including how many inspections it flags in a test week.
 
 Both give precision (hits among flagged), recall (hits among all positives in the pool) and lift
-(precision over the pool's base rate). A sweep from 25 to 300 a week is also computed and drives the dashboard.
+(precision over the pool's base rate). A sweep from 10 to 300 a week in steps of 10 is also computed and
+drives the dashboard.
 
 ## Random split, for comparison
 

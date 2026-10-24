@@ -29,7 +29,7 @@ NEW_MONTH = "2026-09"              # the month the batch scoring script is demon
 
 # Stated assumption: the team can visit this many inspections per week ahead of the rest of the week's pool.
 CAPACITY_PER_WEEK = 100
-CAPACITY_SWEEP = (25, 50, 75, 100, 125, 150, 200, 250, 300)
+CAPACITY_SWEEP = tuple(range(10, 301, 10))  # the dashboard's capacity slider reads this grid
 
 SEEDS = (0, 1, 2, 3, 4)
 SMOOTHING = 20            # pseudo-count for the neighbourhood and cuisine prior rates
